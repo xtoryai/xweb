@@ -1,0 +1,41 @@
+{
+  "installed": {
+    "blog": {
+      "name": "blog",
+      "label": "博客模板",
+      "version": "1.0.0",
+      "source": "builtin",
+      "extends": null,
+      "installedAt": "2026-06-21T00:00:00Z",
+      "path": "templates/blog"
+    },
+    "xtocn": {
+      "name": "xtocn",
+      "label": "雄韬企业站模板",
+      "version": "1.0.0",
+      "source": "builtin",
+      "extends": "blog",
+      "installedAt": "2026-06-21T00:00:00Z",
+      "path": "templates/xtocn"
+    },
+    "portfolio": {
+      "name": "portfolio",
+      "label": "作品集模板",
+      "version": "1.0.0",
+      "source": "builtin",
+      "extends": "blog",
+      "installedAt": "2026-06-22T06:16:02.210Z",
+      "path": "templates/portfolio"
+    },
+    "docs": {
+      "name": "docs",
+      "label": "文档模板",
+      "version": "1.0.0",
+      "source": "builtin",
+      "extends": "blog",
+      "installedAt": "2026-06-23T08:00:41.351Z",
+      "path": "templates/docs"
+    }
+  },
+  "active": "blog"
+}

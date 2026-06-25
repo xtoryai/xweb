@@ -1,0 +1,981 @@
+collections: 内容集
+contents: 内容
+entries: 条目
+files: 文件
+assets: 资源
+media: 媒体
+workflow: 工作流
+editorial_workflow: 编辑工作流
+menu: 菜单
+user_name: 用户名
+password: 密码
+sign_in: 登录
+sign_in_with_mobile: 手机扫码登录
+sign_in_with_mobile_instruction: 使用手机或平板扫描下方二维码，即可免密登录。您的设置将自动同步。
+signed_in_as_x: "以 {$name} 身份登录"
+working_with_local_repo: 正在使用本地仓库
+working_with_test_repo: 正在使用测试仓库
+sign_out: 退出登录
+create: 新建
+select: 选择
+select_all: 全选
+upload: 上传
+copy: 复制
+download: 下载
+duplicate: 复制一份
+delete: 删除
+reorder: 排序
+cancel: 取消
+done: 完成
+save: 保存
+saving: 保存中…
+publish: 发布
+publishing: 发布中…
+rename: 重命名
+update: 更新
+replace: 替换
+add: 添加
+remove: 移除
+remove_x: "移除 {$name}"
+clear: 清除
+expand: 展开
+expand_all: 全部展开
+collapse: 折叠
+collapse_all: 全部折叠
+insert: 插入
+restore: 恢复
+discard: 放弃
+searching: 搜索中…
+no_results: 未找到结果。
+global: 全局
+primary: 主要
+secondary: 次要
+collection: 内容集
+folder: 文件夹
+api_key: API 密钥
+details: 详情
+back: 返回
+previous: 上一页
+next: 下一页
+loading: 加载中…
+load_more: 加载更多
+later: 稍后
+slug: 标识符
+singleton: 单文件
+singletons: 单文件
+clipboard_error: 复制数据时出错。
+welcome_message: "欢迎使用 {$name}"
+powered_by: "由 {$name} 驱动"
+loading_cms_config: 正在加载 CMS 配置…
+loading_site_data: 正在加载站点数据…
+loading_site_data_error: 加载站点数据时出错。
+sign_in_with_x: "使用 {$service} 登录"
+sign_in_using_access_token: 使用访问令牌登录
+sign_in_using_access_token_description: 请在下方输入令牌。令牌需要拥有仓库内容的读写权限。
+sign_in_using_access_token_link: 您可以在 <a>{$service} 用户设置页面</a> 生成令牌。
+personal_access_token: 个人访问令牌
+authorizing: 授权中…
+signing_in: 登录中…
+work_with_local_repo: 使用本地仓库
+work_with_local_repo_description: 在弹出的对话框中选择「{$repo}」仓库的根目录。
+work_with_local_repo_description_no_repo: 在弹出的对话框中选择您的 Git 仓库根目录。
+work_with_test_repo: 使用测试仓库
+sign_in_error:
+  not_project_root: 您选择的文件夹不是仓库根目录，请重试。
+  picker_dismissed: 未能选择仓库根目录，请重试。
+  authentication_aborted: 认证已取消，请重试。
+  invalid_token: 提供的令牌无效，请检查后重试。
+  UNSUPPORTED_BACKEND: 认证服务不支持您使用的 Git 后端。
+  UNSUPPORTED_DOMAIN: 您的域名未被授权使用此认证服务。
+  MISCONFIGURED_CLIENT: OAuth 应用的客户端 ID 或密钥未配置。
+  AUTH_CODE_REQUEST_FAILED: 未能获取授权码，请稍后重试。
+  CSRF_DETECTED: 检测到潜在的 CSRF 攻击，认证流程已中止。
+  TOKEN_REQUEST_FAILED: 请求访问令牌失败，请稍后重试。
+  TOKEN_REFRESH_FAILED: 刷新访问令牌失败，请稍后重试。
+  MALFORMED_RESPONSE: 服务器返回了异常数据，请稍后重试。
+backend_unsupported_version: "{$name} 后端需要 {$name} {$version} 或更高版本。"
+repository_no_access: "您没有「{$repo}」仓库的访问权限。"
+repository_not_found: "「{$repo}」仓库不存在。"
+repository_empty: "「{$repo}」仓库没有任何分支。"
+branch_not_found: "「{$repo}」仓库中不存在「{$branch}」分支。"
+unexpected_error: 未知错误
+entry_parse_errors: |
+  .input {$count :integer}
+  .match $count
+    one {{ 解析条目文件时出现 1 个错误，请查看浏览器控制台了解详情。 }}
+    *   {{ 解析条目文件时出现 {$count} 个错误，请查看浏览器控制台了解详情。 }}
+mobile_promo_title: Sveltia CMS 现已支持移动端！
+mobile_promo_button: 试试看
+visit_live_site: 访问网站
+switch_page: 切换页面
+search_placeholder_contents: 搜索内容…
+search_placeholder_assets: 搜索资源…
+search_placeholder_all: 搜索内容和资源…
+create_entry_or_assets: 创建条目或资源
+publish_changes: 发布更改
+publishing_changes: 正在发布更改…
+publishing_changes_failed: 发布更改失败，请稍后重试。
+show_notifications: 显示通知
+notifications: 通知
+show_account_menu: 显示账户菜单
+account: 账户
+live_site: 网站
+git_repository: Git 仓库
+settings: 设置
+cms_config: CMS 配置
+show_help_menu: 显示帮助菜单
+help: 帮助
+keyboard_shortcuts: 快捷键
+documentation: 文档
+release_notes: 更新日志
+announcements: 公告
+version_x: "版本 {$version}"
+report_issue: 报告问题
+share_feedback: 反馈建议
+get_help: 获取帮助
+donate: 捐赠
+join_discord: 加入 Discord
+bluesky: 关注 Bluesky
+update_available: Sveltia CMS 最新版本已可用。
+update_now: 立即更新
+backend_status:
+  minor_incident: "{$service} 正在经历轻微故障，您的工作流可能会受到影响。"
+  major_incident: "{$service} 正在经历严重故障，建议您等待情况改善后再操作。"
+content_library: 内容库
+asset_library: 资源库
+asset_location:
+  repository: 本站
+  external: 外部来源
+  stock_photos: 免费图库
+collection_assets: 内容集资源
+entry_list: 条目列表
+file_list: 文件列表
+asset_list: 资源列表
+x_collection: "「{$collection}」内容集"
+x_asset_folder: "「{$folder}」资源文件夹"
+viewing_collection_list: 您正在查看内容集列表。
+viewing_asset_folder_list: 您正在查看资源文件夹列表。
+viewing_x_collection: |
+  .input {$count :integer}
+  .match $count
+    0   {{ 您正在查看「{$collection}」内容集，这里还没有条目。 }}
+    one {{ 您正在查看「{$collection}」内容集，这里有 1 个条目。 }}
+    *   {{ 您正在查看「{$collection}」内容集，这里有 {$count} 个条目。 }}
+viewing_x_asset_folder: |
+  .input {$count :integer}
+  .match $count
+    0   {{ 您正在查看「{$folder}」资源文件夹，这里还没有资源。 }}
+    one {{ 您正在查看「{$folder}」资源文件夹，这里有 1 个资源。 }}
+    *   {{ 您正在查看「{$folder}」资源文件夹，这里有 {$count} 个资源。 }}
+singleton_selected_announcement: "按 Enter 键编辑「{$file}」文件。"
+collection_not_found: 未找到内容集
+file_not_found: 未找到文件。
+x_of_x_selected: "已选择 {$selected} / {$total}"
+switch_view: 切换视图
+list_view: 列表视图
+grid_view: 网格视图
+switch_to_list_view: 切换到列表视图
+switch_to_grid_view: 切换到网格视图
+sort: 排序
+sorting_options: 排序选项
+sort_keys:
+  none: 无
+  name: 名称
+  slug: 标识符
+  commit_author: 更新者
+  commit_date: 更新时间
+  _summary: 摘要
+  _manual: 手动
+ascending: "{$label}，A → Z"
+ascending_date: "{$label}，旧 → 新"
+descending: "{$label}，Z → A"
+descending_date: "{$label}，新 → 旧"
+filter: 筛选
+filtering_options: 筛选选项
+group: 分组
+grouping_options: 分组选项
+type: 类型
+all: 全部
+image: 图片
+video: 视频
+audio: 音频
+document: 文档
+other: 其他
+show_assets: 显示资源
+hide_assets: 隐藏资源
+show_info: 显示信息
+hide_info: 隐藏信息
+all_assets: 全部资源
+global_assets: 全局资源
+entry_not_found: 未找到条目。
+creating_entries_disabled_by_admin: 管理员已禁止在此内容集中创建新条目。
+creating_entries_disabled_by_quota: "此内容集已达到 {$quota} 个条目的上限，无法继续创建。"
+creating_entries_nearing_quota: |
+  .input {$remaining :integer}
+  .match $remaining
+    one {{ 此内容集即将达到 {$quota} 个条目的上限，您只能再创建 {$remaining} 个条目。 }}
+    *   {{ 此内容集即将达到 {$quota} 个条目的上限，您只能再创建 {$remaining} 个条目。 }}
+back_to_collection: 返回内容集
+collection_list: 内容集列表
+back_to_collection_list: 返回内容集列表
+asset_folder_list: 资源文件夹列表
+back_to_asset_folder_list: 返回资源文件夹列表
+search_results: 搜索结果
+search_results_for_x: "「{$terms}」的搜索结果"
+viewing_entry_search_results: |
+  .input {$count :integer}
+  .match $count
+    0   {{ 正在查看「{$terms}」的搜索结果，未找到任何条目。 }}
+    one {{ 正在查看「{$terms}」的搜索结果，找到 1 个条目。 }}
+    *   {{ 正在查看「{$terms}」的搜索结果，找到 {$count} 个条目。 }}
+viewing_asset_search_results: |
+  .input {$count :integer}
+  .match $count
+    0   {{ 正在查看「{$terms}」的搜索结果，未找到任何资源。 }}
+    one {{ 正在查看「{$terms}」的搜索结果，找到 1 个资源。 }}
+    *   {{ 正在查看「{$terms}」的搜索结果，找到 {$count} 个资源。 }}
+x_entries: |
+  .input {$count :integer}
+  .match $count
+    0   {{ 暂无条目 }}
+    one {{ {$count} 个条目 }}
+    *   {{ {$count} 个条目 }}
+x_assets: |
+  .input {$count :integer}
+  .match $count
+    0   {{ 暂无资源 }}
+    one {{ {$count} 个资源 }}
+    *   {{ {$count} 个资源 }}
+no_files_found: 未找到文件。
+no_entries_found: 未找到条目。
+upload_assets: 上传新资源
+edit_options: 编辑选项
+show_edit_options: 显示编辑选项
+edit_asset: 编辑资源
+edit_x: "编辑 {$name}"
+wrap_long_lines: 长行自动换行
+rename_asset: 重命名资源
+rename_x: "重命名 {$name}"
+enter_new_name_for_asset: |
+  .input {$count :integer}
+  .match $count
+    0   {{ 请在下方输入新名称。 }}
+    one {{ 请在下方输入新名称。使用此资源的 1 个条目也将被更新。 }}
+    *   {{ 请在下方输入新名称。使用此资源的 {$count} 个条目也将被更新。 }}
+enter_new_name_for_asset_error:
+  empty: 文件名不能为空。
+  character: 文件名不能包含特殊字符。
+  duplicate: 此文件名已被其他资源使用。
+replace_asset: 替换资源
+replace_x: "替换 {$name}"
+click_to_browse: 点击浏览…
+tap_to_browse: 点击浏览…
+drop_files_or_click_to_browse: |
+  .input {$count :integer}
+  .match $count
+    one {{ 拖放文件到此处，或点击浏览… }}
+    *   {{ 拖放文件到此处，或点击浏览… }}
+drop_files_or: |
+  .input {$count :integer}
+  .match $count
+    one {{ 拖放文件到此处，或 }}
+    *   {{ 拖放文件到此处，或 }}
+drop_image_files_or: |
+  .input {$count :integer}
+  .match $count
+    one {{ 拖放图片文件到此处，或 }}
+    *   {{ 拖放图片文件到此处，或 }}
+browse: 浏览
+paste: 粘贴
+paste_image: 粘贴图片
+no_image_in_clipboard: 剪贴板中未找到图片。
+clipboard_access_denied: 剪贴板访问被拒绝。
+drop_files_here: |
+  .input {$count :integer}
+  .match $count
+    one {{ 拖放文件到此处 }}
+    *   {{ 拖放文件到此处 }}
+unsupported_file_type: 不支持的文件类型
+dropped_file_type_mismatch: "拖放的文件不是 {$type} 类型，请重试。"
+dropped_image_type_mismatch: 拖放的文件不受支持。仅接受 AVIF、GIF、JPEG、PNG、WebP 或 SVG 格式的图片，请重试。
+choose_files: |
+  .input {$count :integer}
+  .match $count
+    one {{ 选择文件 }}
+    *   {{ 选择文件 }}
+delete_assets: |
+  .input {$count :integer}
+  .match $count
+    one {{ 删除资源 }}
+    *   {{ 删除资源 }}
+delete_selected_assets: |
+  .input {$count :integer}
+  .match $count
+    one {{ 删除已选资源 }}
+    *   {{ 删除已选资源 }}
+confirm_deleting_this_asset: 确定要删除此资源吗？
+confirm_deleting_selected_assets: |
+  .input {$count :integer}
+  .match $count
+    one {{ 确定要删除已选的资源吗？ }}
+    *   {{ 确定要删除已选的 {$count} 个资源吗？ }}
+confirm_deleting_all_assets: 确定要删除所有资源吗？
+delete_entries: |
+  .input {$count :integer}
+  .match $count
+    one {{ 删除条目 }}
+    *   {{ 删除条目 }}
+delete_selected_entries: |
+  .input {$count :integer}
+  .match $count
+    one {{ 删除已选条目 }}
+    *   {{ 删除已选条目 }}
+confirm_deleting_this_entry: 确定要删除此条目吗？
+confirm_deleting_this_entry_with_assets: 确定要删除此条目及其关联的资源吗？
+confirm_deleting_selected_entries: |
+  .input {$count :integer}
+  .match $count
+    one {{ 确定要删除已选的条目吗？ }}
+    *   {{ 确定要删除已选的 {$count} 个条目吗？ }}
+confirm_deleting_selected_entries_with_assets: |
+  .input {$count :integer}
+  .match $count
+    one {{ 确定要删除已选的条目及其关联的资源吗？ }}
+    *   {{ 确定要删除已选的 {$count} 个条目及其关联的资源吗？ }}
+confirm_deleting_all_entries: 确定要删除所有条目吗？
+confirm_deleting_all_entries_with_assets: 确定要删除所有条目及其关联的资源吗？
+reorder_entries: 条目排序
+done_reordering_entries: 完成排序
+cancel_reordering_entries: 取消排序
+saving_reorder_failed: 保存新排序失败，请重试。
+processing_files: |
+  .input {$count :integer}
+  .match $count
+    one {{ 正在处理文件，可能需要一些时间。 }}
+    *   {{ 正在处理文件，可能需要一些时间。 }}
+uploading_files: 上传文件
+confirm_replacing_file: "「{$name}」将被替换为此文件："
+confirm_uploading_files: |
+  .input {$count :integer}
+  .match $count
+    one {{ 此文件将保存到「{$folder}」文件夹： }}
+    *   {{ 这 {$count} 个文件将保存到「{$folder}」文件夹： }}
+oversized_files: 超大文件
+warning_oversized_files: |
+  .input {$count :integer}
+  .match $count
+    one {{ 此文件因超过 {$size} 的大小限制而无法上传。请缩小文件或选择其他文件。 }}
+    *   {{ 这些文件因超过 {$size} 的大小限制而无法上传。请缩小文件或选择其他文件。 }}
+file_name_conflict_confirmation: |
+  .input {$count :integer}
+  .match $count
+    one {{ 同名文件已存在于此文件夹中，是否替换？ }}
+    *   {{ {$count} 个同名文件已存在于此文件夹中，是否替换？ }}
+file_name_conflict_confirmation_with_name: |
+  .input {$count :integer}
+  .input {$name :string}
+  .match $count
+    one {{ "名为「{$name}」的文件已存在于此文件夹中，是否替换？ }}
+    *   {{ {$count} 个同名文件已存在于此文件夹中，是否替换？ }}
+file_name_conflict_resolution: 文件名冲突处理
+keep_both: 保留两者
+uploading_files_progress: |
+  .input {$count :integer}
+  .match $count
+    one {{ 正在上传文件… }}
+    *   {{ 正在上传文件… }}
+uploading_files_failed: |
+  .input {$count :integer}
+  .match $count
+    one {{ 文件上传失败 }}
+    *   {{ 文件上传失败 }}
+file_meta: "{$type} · {$size}"
+file_meta_converted_from_x: "（从 {$type} 转换）"
+no_entries_created: 此内容集还没有条目。
+create_new_entry: 创建新条目
+entry: 条目
+index_file: 索引文件
+no_files_in_collection: 此内容集中没有文件。
+asset_info: 资源信息
+select_asset_show_info: 选择一个资源以查看信息。
+duplicate_entry: 复制条目
+entry_duplicated: 条目已复制，现为新的草稿。
+entry_validation_errors: |
+  .input {$count :integer}
+  .match $count
+    one {{ 1 个字段有误，请修正后保存。 }}
+    *   {{ {$count} 个字段有误，请修正后保存。 }}
+entry_saved: |
+  .input {$count :integer}
+  .match $count
+    one {{ 条目已保存。 }}
+    *   {{ {$count} 个条目已保存。 }}
+entry_saved_and_published: |
+  .input {$count :integer}
+  .match $count
+    one {{ 条目已保存并发布。 }}
+    *   {{ {$count} 个条目已保存并发布。 }}
+entries_deleted: |
+  .input {$count :integer}
+  .match $count
+    one {{ 条目已删除。 }}
+    *   {{ {$count} 个条目已删除。 }}
+assets_saved: |
+  .input {$count :integer}
+  .match $count
+    one {{ 资源已保存。 }}
+    *   {{ {$count} 个资源已保存。 }}
+assets_saved_and_published: |
+  .input {$count :integer}
+  .match $count
+    one {{ 资源已保存并发布。 }}
+    *   {{ {$count} 个资源已保存并发布。 }}
+asset_urls_copied: |
+  .input {$count :integer}
+  .match $count
+    one {{ 资源 URL 已复制到剪贴板。 }}
+    *   {{ {$count} 个资源 URL 已复制到剪贴板。 }}
+asset_paths_copied: |
+  .input {$count :integer}
+  .match $count
+    one {{ 资源文件路径已复制到剪贴板。 }}
+    *   {{ {$count} 个资源文件路径已复制到剪贴板。 }}
+asset_data_copied: |
+  .input {$count :integer}
+  .match $count
+    one {{ 资源文件已复制到剪贴板。 }}
+    *   {{ {$count} 个资源文件已复制到剪贴板。 }}
+assets_downloaded: |
+  .input {$count :integer}
+  .match $count
+    one {{ 资源文件已下载。 }}
+    *   {{ {$count} 个资源文件已下载。 }}
+assets_moved: |
+  .input {$count :integer}
+  .match $count
+    one {{ 资源已移动。 }}
+    *   {{ {$count} 个资源已移动。 }}
+assets_renamed: |
+  .input {$count :integer}
+  .match $count
+    one {{ 资源已重命名。 }}
+    *   {{ {$count} 个资源已重命名。 }}
+assets_deleted: |
+  .input {$count :integer}
+  .match $count
+    one {{ 资源已删除。 }}
+    *   {{ {$count} 个资源已删除。 }}
+content_editor: 内容编辑器
+restore_backup_title: 恢复草稿
+restore_backup_description: "此条目有一个 {$datetime} 的备份，要恢复已编辑的草稿吗？"
+draft_backup_saved: 草稿备份已保存。
+draft_backup_restored: 草稿备份已恢复。
+draft_backup_deleted: 草稿备份已删除。
+cancel_editing: 取消编辑
+create_entry_title: "正在创建 {$name}"
+create_entry_announcement: "您正在「{$collection}」内容集中创建新条目。"
+edit_entry_title: "{$collection} › {$entry}"
+edit_entry_announcement: "您正在编辑「{$collection}」内容集中的「{$entry}」条目。"
+edit_file_announcement: "您正在编辑「{$collection}」内容集中的「{$file}」文件。"
+edit_singleton_announcement: "您正在编辑「{$file}」文件。"
+save_and_publish: 保存并发布
+save_without_publishing: 仅保存不发布
+show_editor_options: 显示编辑器选项
+editor_options: 编辑器选项
+show_preview: 显示预览
+sync_scrolling: 同步滚动
+switch_locale: 切换语言
+locale_content_disabled_short: （已禁用）
+locale_content_error_short: （错误）
+edit: 编辑
+preview: 预览
+swap_panes: 交换窗格
+edit_x_locale: "编辑 {$locale} 内容"
+preview_x_locale: "预览 {$locale} 内容"
+content_preview: 内容预览
+show_content_options_x_locale: "显示 {$locale} 内容选项"
+content_options_x_locale: "{$locale} 内容选项"
+x_field: "「{$field}」字段"
+show_field_options: 显示字段选项
+field_options: 字段选项
+unsupported_field_type_x: "不支持的字段类型：{$name}"
+enable_x_locale: "启用 {$locale}"
+reenable_x_locale: "重新启用 {$locale}"
+disable_x_locale: "禁用 {$locale}"
+locale_x_has_been_disabled: "{$locale} 内容已被禁用。"
+locale_x_now_disabled: "{$locale} 内容现已被禁用，保存条目时将被删除。"
+view_in_repository: 在仓库中查看
+view_on_x: "在 {$service} 上查看"
+view_on_live_site: 在网站上查看
+copy_from: 从…复制
+copy_from_x: "从 {$locale} 复制"
+translation_options: 翻译选项
+translate: 翻译
+translate_fields: |
+  .input {$count :integer}
+  .match $count
+    one {{ 翻译字段 }}
+    *   {{ 翻译字段 }}
+translate_from: 从…翻译
+translate_from_x: "从 {$locale} 翻译"
+revert_changes: 撤销更改
+revert_all_changes: 撤销所有更改
+edit_slug: 编辑标识符
+edit_slug_warning: 更改标识符可能会破坏指向该条目的内部和外部链接。目前 Sveltia CMS 不会更新关联字段创建的引用，因此您需要手动更新这些引用以及其他链接。
+edit_slug_error:
+  empty: 标识符不能为空。
+  duplicate: 此标识符已被其他条目使用。
+required: 必填
+editor:
+  translation:
+    none: 没有字段被翻译。
+    started: 翻译中…
+    error: 翻译过程中出现错误。
+    complete: |
+      .input {$count :integer}
+      .match $count
+        0   {{ 没有字段从 {$source} 翻译。 }}
+        one {{ 已从 {$source} 翻译了 1 个字段。 }}
+        *   {{ 已从 {$source} 翻译了 {$count} 个字段。 }}
+  copy:
+    none: 没有字段被复制。
+    complete: |
+      .input {$count :integer}
+      .match $count
+        0   {{ 没有字段从 {$source} 复制。 }}
+        one {{ 已从 {$source} 复制了 1 个字段。 }}
+        *   {{ 已从 {$source} 复制了 {$count} 个字段。 }}
+validation:
+  value_missing: 此字段为必填项。
+  range_underflow:
+    datetime-local: "日期时间必须在 {$min} 或之后。"
+    date: "日期必须在 {$min} 或之后。"
+    time: "时间必须在 {$min} 或之后。"
+    number: "数值必须大于或等于 {$min}。"
+    select: |
+      .input {$min :integer}
+      .match $min
+        one {{ 至少需要选择 {$min} 个选项。 }}
+        *   {{ 至少需要选择 {$min} 个选项。 }}
+    add: |
+      .input {$min :integer}
+      .match $min
+        one {{ 至少需要添加 {$min} 个项目。 }}
+        *   {{ 至少需要添加 {$min} 个项目。 }}
+  range_overflow:
+    datetime-local: "日期时间必须在 {$max} 或之前。"
+    date: "日期必须在 {$max} 或之前。"
+    time: "时间必须在 {$max} 或之前。"
+    number: "数值必须小于或等于 {$max}。"
+    select: |
+      .input {$max :integer}
+      .match $max
+        one {{ 最多只能选择 {$max} 个选项。 }}
+        *   {{ 最多只能选择 {$max} 个选项。 }}
+    add: |
+      .input {$max :integer}
+      .match $max
+        one {{ 最多只能添加 {$max} 个项目。 }}
+        *   {{ 最多只能添加 {$max} 个项目。 }}
+  too_short: |
+    .input {$min :integer}
+    .match $min
+      one {{ 至少需要输入 {$min} 个字符。 }}
+      *   {{ 至少需要输入 {$min} 个字符。 }}
+  too_long: |
+    .input {$max :integer}
+    .match $max
+      one {{ 最多只能输入 {$max} 个字符。 }}
+      *   {{ 最多只能输入 {$max} 个字符。 }}
+  type_mismatch:
+    number: 请输入数字。
+    email: 请输入有效的邮箱地址。
+    url: 请输入有效的 URL。
+entry_sidebar:
+  sidebar_panels: 侧边栏面板
+  validation:
+    title: 校验
+    placeholder: 校验结果将显示在此处。
+    no_errors_found: 未发现错误。
+  history:
+    title: 历史记录
+    fetch_failed: 加载历史记录失败。
+    no_history: 未找到历史记录。
+  backlinks:
+    title: 反向链接
+    no_entries: 没有条目引用此条目。
+saving_entry:
+  error:
+    title: 错误
+    description: 保存条目时出错，请稍后重试。
+viewing_x_asset_details: "您正在查看「{$name}」资源的详情。"
+asset_editor: 资源编辑器
+preview_unavailable: 预览不可用。
+public_urls: |
+  .input {$count :integer}
+  .match $count
+    one {{ 公开 URL }}
+    *   {{ 公开 URL }}
+file_paths: |
+  .input {$count :integer}
+  .match $count
+    one {{ 文件路径 }}
+    *   {{ 文件路径 }}
+file_data: 文件数据
+kind: 类型
+size: 大小
+dimensions: 尺寸
+duration: 时长
+used_in: 被引用
+created_date: 创建日期
+location: 位置
+map_lat_lng: "纬度 {$latitude}、经度 {$longitude} 的地图"
+remove_this_item: 移除此项
+move_up: 上移
+move_down: 下移
+add_x: "添加 {$name}"
+add_item_above: 在上方添加
+add_item_below: 在下方添加
+select_list_type: 选择列表类型
+opacity: 不透明度
+unselected_option: （无）
+assets_dialog:
+  title:
+    file: 选择文件
+    image: 选择图片
+  search_for_file: 搜索文件
+  search_for_image: 搜索图片
+  locations: 位置
+  folder:
+    field: 字段资源
+    entry: 条目资源
+    file: 文件资源
+    collection: 内容集资源
+    global: 全局资源
+  error:
+    invalid_key: 您的 API 密钥无效或已过期，请检查后重试。
+    search_fetch_failed: 搜索资源时出错，请稍后重试。
+    image_fetch_failed: 下载所选资源时出错，请稍后重试。
+  available_images: 可用图片
+  enter_url: 输入 URL
+  enter_file_url: "输入文件 URL："
+  enter_image_url: "输入图片 URL："
+  large_file:
+    title: 大文件
+  photo_credit:
+    title: 图片来源
+    description: "请尽可能使用以下来源信息："
+  unsaved: 未保存
+character_counter:
+  min_max: |
+    .input {$count :integer}
+    .match $count
+      0   {{ 未输入字符。最少 {$min} 个，最多 {$max} 个。 }}
+      one {{ 已输入 {$count} 个字符。最少 {$min} 个，最多 {$max} 个。 }}
+      *   {{ 已输入 {$count} 个字符。最少 {$min} 个，最多 {$max} 个。 }}
+  min: |
+    .input {$count :integer}
+    .match $count
+      0   {{ 未输入字符。最少 {$min} 个。 }}
+      one {{ 已输入 {$count} 个字符。最少 {$min} 个。 }}
+      *   {{ 已输入 {$count} 个字符。最少 {$min} 个。 }}
+  max: |
+    .input {$count :integer}
+    .match $count
+      0   {{ 未输入字符。最多 {$max} 个。 }}
+      one {{ 已输入 {$count} 个字符。最多 {$max} 个。 }}
+      *   {{ 已输入 {$count} 个字符。最多 {$max} 个。 }}
+youtube_video_player: YouTube 视频播放器
+today: 今天
+now: 此刻
+editor_components:
+  image: 图片
+  src: 来源
+  alt: 替代文本
+  title: 标题
+  link: 链接
+key_value:
+  key: 键
+  value: 值
+  action: 操作
+  empty_key: 键不能为空。
+  duplicate_key: 键不能重复。
+find_place: 查找地点
+use_your_location: 使用当前位置
+geolocation_error_title: 定位错误
+geolocation_error_body: 获取您的位置时出错。
+geolocation_unsupported: 此浏览器不支持定位功能。
+boolean:
+  "true": 是
+  "false": 否
+cloud_storage:
+  invalid: 此服务未正确配置。
+  auth:
+    api_key:
+      key_label: API 密钥
+      initial: "请输入 {$service} 的 {$key}。"
+      requested: 验证中…
+      error: "提供的 {$key} 无效，请检查后重试。"
+    password:
+      initial: "请输入 {$service} 的密码。"
+      requested: 登录中…
+      error: 用户名或密码错误，请检查后重试。
+  cloudinary:
+    iframe_title: Cloudinary 媒体库
+    activate:
+      button_label: 激活 Cloudinary
+      description: 登录后，再次点击登录按钮以继续。
+    auth_key_label: API 密钥
+  uploadcare:
+    auth_key_label: API 密钥
+  aws_s3:
+    auth_key_label: 访问密钥
+  cloudflare_r2:
+    auth_key_label: 访问密钥
+  digitalocean_spaces:
+    auth_key_label: 访问密钥
+config:
+  errors: |
+    .input {$count :integer}
+    .match $count
+      one {{ CMS 配置中存在 1 个错误，请解决问题后重试。 }}
+      *   {{ CMS 配置中存在 {$count} 个错误，请解决问题后重试。 }}
+  error_locator:
+    collection: "{$collection} 内容集"
+    file: "{$file} 文件"
+    field: "`{$field}` 字段"
+  error:
+    no_secure_context: Sveltia CMS 仅在 HTTPS 或 localhost 下运行。
+    insecure_url: 配置文件 URL 必须使用 HTTPS 协议或 localhost 地址。
+    insecure_urls: |
+      .input {$count :integer}
+      .match $count
+        one {{ 配置文件 URL 必须使用 HTTPS 协议或 localhost 地址。 }}
+        *   {{ 配置文件 URL 必须使用 HTTPS 协议或 localhost 地址。 }}
+    fetch_failed: 无法获取配置文件。
+    fetch_failed_not_ok: "HTTP 响应返回了状态码 {$status}。"
+    fetch_failed_with_manual_init: "无法获取配置文件。如需阻止加载 `config.yml`，请在传递给 `CMS.init()` 的配置对象中添加 [`load_config_file: false`](https://sveltiacms.app/en/docs/api/initialization#providing-a-full-configuration)。"
+    parse_failed: 无法解析配置文件。
+    parse_failed_invalid_object: 配置文件不是有效的 JavaScript 对象。
+    parse_failed_unsupported_type: 配置文件不是有效的文件类型。仅支持 YAML、TOML 和 JSON。
+    no_collection: 未定义内容集。
+    missing_backend: 未定义后端。
+    missing_backend_name: 未定义后端名称。
+    unsupported_known_backend: "{$name} 后端在 Sveltia CMS 中[不受支持](https://sveltiacms.app/en/docs/migration/netlify-decap-cms#features-not-to-be-implemented)。"
+    unsupported_deprecated_backend: "已弃用的 {$name} 后端在 Sveltia CMS 中[不受支持](https://sveltiacms.app/en/docs/migration/netlify-decap-cms#features-not-to-be-implemented)。"
+    unsupported_custom_backend: "自定义后端在 Sveltia CMS 中[不受支持](https://sveltiacms.app/en/docs/migration/netlify-decap-cms#features-not-to-be-implemented)。"
+    unsupported_backend_suggestion: "请使用[受支持的后端](https://sveltiacms.app/en/docs/backends#supported-backends)。"
+    missing_repository: 未定义仓库。
+    invalid_repository: 配置的仓库无效，格式必须为「owner/repo」。
+    oauth_implicit_flow: Sveltia CMS 不支持配置的认证方式（隐式流）。请使用其他[认证方式](https://sveltiacms.app/en/docs/backends/BACKEND_NAME#authentication)。
+    github_pkce_unsupported: 由于 GitHub 的限制，PKCE 认证暂不支持。请使用其他[认证方式](https://sveltiacms.app/en/docs/backends/github#authentication)。
+    oauth_no_app_id: 未定义 OAuth 应用 ID。
+    no_auth_methods: "`auth_methods` 选项必须至少包含一种认证方式。"
+    missing_media_folder: 未定义媒体文件夹。
+    invalid_media_folder: 配置的媒体文件夹无效，必须是字符串。
+    invalid_public_folder: 配置的公开文件夹无效，必须是字符串。
+    public_folder_relative_path: 配置的公开文件夹无效，必须以「/」开头的绝对路径。
+    public_folder_absolute_url: Sveltia CMS 不支持公开文件夹使用绝对 URL。
+    invalid_asset_collections: "`asset_collections` 选项无效，必须是数组。"
+    missing_asset_collection_name: "第 {$count} 个资源内容集的 `name` 选项必须定义为非空字符串。"
+    invalid_asset_collection_name: "资源内容集名称 `{$name}` 无效，不能包含特殊字符。"
+    duplicate_asset_collection_name: "资源内容集名称必须唯一，但 `{$name}` 被多次使用。"
+    asset_collection_invalid_media_folder: "「{$name}」资源内容集的 `media_folder` 选项必须定义为字符串。"
+    invalid_collection_no_options: 内容集必须定义 `folder`、`files` 或 `divider` 选项之一。
+    invalid_collection_multiple_options: 内容集不能同时拥有 `folder`、`files` 和 `divider` 选项。
+    file_format_mismatch: "扩展名 `{$extension}` 与 `{$format}` 格式不匹配。"
+    invalid_slug_slash: "标识符模板 `{$slug}` 无效，不能包含斜杠。如需将条目组织到子文件夹中，请使用 `path` 选项而非 `slug`。"
+    missing_collection_name: "第 {$count} 个内容集的 `name` 选项必须定义为非空字符串。"
+    invalid_collection_name: "内容集名称 `{$name}` 无效，不能包含特殊字符。"
+    duplicate_collection_name: "内容集名称必须唯一，但 `{$name}` 被多次使用。"
+    missing_collection_file_name: "第 {$count} 个内容集文件的 `name` 选项必须定义为非空字符串。"
+    invalid_collection_file_name: "内容集文件名称 `{$name}` 无效，不能包含特殊字符。"
+    duplicate_collection_file_name: "内容集文件名称必须唯一，但 `{$name}` 被多次使用。"
+    collection_no_fields: 内容集必须通过 `fields` 选项定义至少一个字段。
+    collection_file_no_fields: 内容集文件必须通过 `fields` 选项定义至少一个字段。
+    collection_file_i18n_required: 如果在 `file` 路径中使用了 `locale` 占位符，则必须定义 `i18n` 选项。
+    missing_field_name: "第 {$count} 个字段的 `name` 选项必须定义为非空字符串。"
+    invalid_field_name: "字段名 `{$name}` 无效，不能包含特殊字符。如需嵌套字段，请[使用 Object 字段而非点号语法](https://sveltiacms.app/en/docs/troubleshooting#using-proper-naming-conventions)。"
+    duplicate_field_name: "字段名必须唯一，但 `{$name}` 被多次使用。"
+    missing_variable_type: "第 {$count} 个变量类型的 `name` 选项必须定义为非空字符串。"
+    invalid_variable_type: "变量类型名称 `{$name}` 无效，不能包含特殊字符。"
+    duplicate_variable_type: "变量类型名称必须唯一，但 `{$name}` 被多次使用。"
+    date_field_type: "Sveltia CMS 不支持已弃用的 Date 字段类型。请使用带 `type: date` 选项的 DateTime 字段类型。"
+    invalid_timezone: "无效的时区：{$timeZone}。必须使用有效的 IANA 时区标识符，例如 `America/New_York` 或 `Asia/Tokyo`。"
+    unsupported_deprecated_option: Sveltia CMS 不支持已弃用的 `{$prop}` 选项，请使用 `{$newProp}` 选项。
+    allow_multiple: Sveltia CMS 不支持 `allow_multiple` 选项。请使用 `multiple` 选项，默认值为 `false`。
+    invalid_list_field: List 字段不能同时拥有 `field`、`fields` 和 `types` 选项。
+    invalid_list_variable_type: "List 字段的变量类型无效，`widget` 选项设置为 `{$widget}`，但必须是 `object`。"
+    invalid_object_field: Object 字段不能同时拥有 `fields` 和 `types` 选项。
+    object_field_missing_fields: Object 字段必须定义 `fields` 或 `types` 选项。
+    relation_field_invalid_collection: "引用的 `{$collection}` 内容集无效或未定义。"
+    relation_field_invalid_collection_file: "引用的 `{$file}` 文件无效或未定义。"
+    relation_field_missing_file_name: 引用文件内容集时必须定义 `file` 选项。
+    relation_field_invalid_value_field: "引用的值字段 `{$field}` 无效或未定义。"
+    unexpected: 未知错误
+  warning:
+    oauth_no_app_id: 未定义 OAuth 应用 ID，用户需要提供访问令牌才能登录。
+    editorial_workflow_unsupported: Sveltia CMS 尚不支持编辑工作流。
+    open_authoring_unsupported: Sveltia CMS 尚不支持开放创作。
+    nested_collections_unsupported: Sveltia CMS 尚不支持嵌套内容集。
+    unsupported_ignored_option: Sveltia CMS 不支持 `{$prop}` 选项，将被忽略。
+    conflicting_timezone_options: 同时设置了 `picker_utc` 和较新的时区选项（`input_timezone` 或 `output_utc`）。新选项将优先使用，建议从配置中移除 `picker_utc`。
+  compatibility_link: "请查看兼容性说明了解详情：https://sveltiacms.app/en/docs/migration/netlify-decap-cms#features-not-to-be-implemented"
+local_workflow:
+  indicator: 本地
+  unsupported_browser: 您的浏览器不支持本地工作流，请使用 Chrome 或 Edge。
+  disabled: 您的浏览器已禁用本地工作流。<a>点击此处了解如何启用</a>。
+status:
+  drafts: 草稿
+  in_review: 审核中
+  ready: 就绪
+categories: 分类
+prefs:
+  changes:
+    api_key_saved: API 密钥已保存。
+    api_key_removed: API 密钥已删除。
+    api_key_invalid: 提供的 API 密钥无效，请检查后重试。
+  error:
+    permission_denied: 浏览器存储（Cookie）访问被拒绝，请检查权限后重试。
+  appearance:
+    title: 外观
+    theme: 主题
+    select_theme: 选择主题
+  theme:
+    auto: 自动
+    dark: 深色
+    light: 浅色
+  language:
+    title: 语言
+    ui_language:
+      title: 界面语言
+      select_language: 选择语言
+  contents:
+    title: 内容
+    editor:
+      title: 编辑器
+      use_draft_backup:
+        switch_label: 自动备份条目草稿
+      close_on_save:
+        switch_label: 保存草稿后关闭编辑器
+      close_with_escape:
+        switch_label: 按 Escape 键关闭编辑器
+  i18n:
+    title: 国际化
+    translators:
+      default:
+        title: 默认翻译服务
+        select_service: 选择服务
+      api_keys:
+        title: 翻译服务 API 密钥
+        description: 管理<a>翻译服务</a>的 API 密钥。
+      field_label: "{$service} 密钥"
+      description: 注册 <a {$homeHref}>{$service}</a> 并在此输入<a {$apiKeyHref}>您的 API 密钥</a>，即可快速翻译文本字段。
+  media:
+    title: 媒体
+    stock_photos:
+      api_keys:
+        title: 免费图库 API 密钥
+        description: 管理<a>免费图库服务</a>的 API 密钥。
+      field_label: "{$service} API 密钥"
+      description: 注册 <a {$homeHref}>{$service} API</a> 并在此输入<a {$apiKeyHref}>您的 API 密钥</a>，即可在图片字段中插入免费图片。
+      credit: "图片由 {$service} 提供"
+      no_services: 未配置<a>免费图库服务</a>。
+    cloud_storage:
+      api_keys:
+        title: 云存储 API 密钥
+        description: 管理<a>云存储服务</a>的 API 密钥。
+      field_label: "{$service} API 密钥"
+      no_services: 未配置<a>云存储服务</a>。
+  accessibility:
+    title: 无障碍
+    underline_links:
+      title: 链接下划线
+      description: 在条目预览和界面标签中为链接显示下划线。
+      switch_label: 始终显示下划线
+  advanced:
+    title: 高级
+    beta:
+      title: 测试功能
+      description: 启用一些可能不稳定或未本地化的测试功能。
+      switch_label: 加入测试计划
+    developer_mode:
+      title: 开发者模式
+      description: 启用一些面向开发者的功能，包括详细的控制台日志和原生上下文菜单。
+      switch_label: 启用开发者模式
+    deploy_hook:
+      title: 部署钩子
+      description: 输入一个 Webhook URL，当您选择「发布更改」手动触发部署时将被调用。如果使用 GitHub Actions，可以留空。
+      url:
+        field_label: 钩子 URL
+        saved: 钩子 URL 已保存。
+        removed: 钩子 URL 已删除。
+      auth:
+        field_label: "Authorization 请求头（例如 Bearer <token>）（可选）"
+        saved: Authorization 请求头已保存。
+        removed: Authorization 请求头已删除。
+keyboard_shortcuts_:
+  view_content_library: 查看内容库
+  view_asset_library: 查看资源库
+  search: 搜索条目和资源
+  create_entry: 创建新条目
+  save_entry: 保存条目
+  cancel_editing: 取消编辑
+file_type_labels:
+  avif: AVIF 图片
+  bmp: BMP 图片
+  gif: GIF 图片
+  ico: 图标
+  jpeg: JPEG 图片
+  jpg: JPEG 图片
+  png: PNG 图片
+  svg: SVG 图片
+  tif: TIFF 图片
+  tiff: TIFF 图片
+  webp: WebP 图片
+  avi: AVI 视频
+  m4v: MP4 视频
+  mov: QuickTime 视频
+  mp4: MP4 视频
+  mpeg: MPEG 视频
+  mpg: MPEG 视频
+  ogg: Ogg 视频
+  ogv: Ogg 视频
+  ts: MPEG 视频
+  webm: WebM 视频
+  3gp: 3GPP 视频
+  3g2: 3GPP2 视频
+  aac: AAC 音频
+  mid: MIDI
+  midi: MIDI
+  m4a: MP4 音频
+  mp3: MP3 音频
+  oga: Ogg 音频
+  opus: OPUS 音频
+  wav: WAV 音频
+  weba: WebM 音频
+  csv: CSV 表格
+  doc: Word 文档
+  docx: Word 文档
+  odp: OpenDocument 演示
+  ods: OpenDocument 表格
+  odt: OpenDocument 文本
+  pdf: PDF 文档
+  ppt: PowerPoint 演示
+  pptx: PowerPoint 演示
+  rtf: 富文本文档
+  xls: Excel 表格
+  xlsx: Excel 表格
+  html: HTML 文本
+  js: JavaScript
+  json: JSON 文本
+  md: Markdown 文本
+  toml: TOML 文本
+  yaml: YAML 文本
+  yml: YAML 文本
+file_size_units:
+  b: "{$size} 字节"
+  kb: "{$size} KB"
+  mb: "{$size} MB"
+  gb: "{$size} GB"
+  tb: "{$size} TB"

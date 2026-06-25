@@ -1,0 +1,191 @@
+---
+import { getContent, getFileContent } from '../core/content';
+import { t, getFrontendLocale } from '../core/i18n-frontend';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const locale = getFrontendLocale(Astro.request);
+
+const general = getFileContent('src/content/settings/general.yml') || {};
+const docsSettings = getFileContent('src/content/settings/docs.yml') || {};
+const siteTitle = title
+  ? `${title} - ${general.site_title || 'Docs'}`
+  : `${docsSettings.docs_title || general.site_title || 'Docs'}`;
+
+const allDocs = getContent('docs', 'src/content/docs');
+
+// Build tree: top-level docs, each with children
+const topDocs = allDocs
+  .filter(d => !d.data.parent)
+  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+
+function getChildren(parentSlug: string) {
+  return allDocs
+    .filter(d => d.data.parent === parentSlug)
+    .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+}
+
+const currentPath = Astro.url.pathname;
+const currentSlug = currentPath.replace('/docs/', '').replace('/docs', '');
+
+const theme = {
+  primary: general.theme_primary || '#1a1a2e',
+  accent: general.theme_accent || '#0066cc',
+  sidebarWidth: general.theme_sidebar_width || '260px',
+};
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{siteTitle}</title>
+  <meta name="description" content={description || docsSettings.docs_description || ''} />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <Fragment set:html={`<style is:inline>
+    :root {
+      --xt-primary: ${theme.primary};
+      --xt-accent: ${theme.accent};
+      --xt-sidebar: ${theme.sidebarWidth};
+    }
+  </style>`} />
+
+  <style is:inline>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      font-size: 15px; color: #333; line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--xt-accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .layout { display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--xt-sidebar, 260px); min-width: var(--xt-sidebar, 260px);
+      background: #f7f7f9; border-right: 1px solid #e8e8ec;
+      padding: 24px 0; position: sticky; top: 0; height: 100vh;
+      overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .sidebar-header {
+      padding: 0 20px 20px; border-bottom: 1px solid #e8e8ec; margin-bottom: 12px;
+    }
+    .sidebar-header a { font-size: 17px; font-weight: 700; color: var(--xt-primary); }
+    .sidebar-header p { font-size: 12px; color: #999; margin-top: 4px; }
+
+    .sidebar-tree { flex: 1; padding: 0 12px; }
+    .tree-item { display: block; padding: 6px 12px; font-size: 14px; color: #555; border-radius: 4px; margin-bottom: 2px; transition: background 0.15s; }
+    .tree-item:hover { background: #e8e8ec; text-decoration: none; }
+    .tree-item.active { background: var(--xt-accent); color: #fff; font-weight: 600; }
+    .tree-item.active:hover { background: var(--xt-accent); }
+    .tree-children { padding-left: 16px; }
+    .tree-parent { font-weight: 500; color: #333; }
+
+    .sidebar-footer { padding: 16px 20px 0; border-top: 1px solid #e8e8ec; font-size: 12px; color: #999; margin-top: auto; }
+    .sidebar-footer a { color: #999; }
+
+    /* Main content */
+    .main { flex: 1; min-width: 0; padding: 40px 48px; max-width: 860px; }
+    .main h1 { font-size: 30px; font-weight: 700; margin-bottom: 8px; color: #000; }
+    .main h2 { font-size: 22px; font-weight: 600; margin-top: 36px; margin-bottom: 12px; color: #111; padding-bottom: 6px; border-bottom: 1px solid #eee; }
+    .main h3 { font-size: 18px; font-weight: 600; margin-top: 28px; margin-bottom: 8px; }
+    .main p { margin-bottom: 14px; }
+    .main ul, .main ol { padding-left: 24px; margin-bottom: 14px; }
+    .main li { margin-bottom: 4px; }
+    .main code {
+      background: #f0f0f3; padding: 2px 6px; border-radius: 3px;
+      font-size: 13px; font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .main pre {
+      background: #1e1e2e; color: #cdd6f4; padding: 16px 20px;
+      border-radius: 6px; overflow-x: auto; font-size: 13px;
+      line-height: 1.6; margin-bottom: 16px;
+    }
+    .main pre code { background: none; padding: 0; color: inherit; }
+    .main blockquote {
+      border-left: 3px solid var(--xt-accent); padding: 8px 16px;
+      margin: 16px 0; background: #f7f7f9; border-radius: 0 4px 4px 0;
+      color: #666;
+    }
+    .main table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    .main th, .main td { border: 1px solid #e0e0e4; padding: 8px 14px; text-align: left; font-size: 14px; }
+    .main th { background: #f7f7f9; font-weight: 600; }
+    .main img { max-width: 100%; border-radius: 4px; }
+
+    /* Mobile */
+    .mob-toggle { display: none; }
+    @media (max-width: 768px) {
+      .layout { flex-direction: column; }
+      .sidebar {
+        position: fixed; inset: 0; z-index: 50; width: 100%; min-width: 100%;
+        transform: translateX(-100%); transition: transform 0.3s;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .mob-toggle {
+        display: flex; position: fixed; bottom: 20px; right: 20px; z-index: 60;
+        width: 48px; height: 48px; background: var(--xt-primary); color: #fff;
+        border: none; border-radius: 50%; font-size: 22px; cursor: pointer;
+        align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      }
+      .main { padding: 24px 20px; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="/docs">{docsSettings.docs_title || '文档中心'}</a>
+        <p>{docsSettings.docs_description || ''}</p>
+      </div>
+      <nav class="sidebar-tree">
+        {topDocs.map(doc => (
+          <>
+            <a href={`/docs/${doc.slug}`} class={`tree-item tree-parent ${currentSlug === doc.slug ? 'active' : ''}`}>
+              {doc.data.title}
+            </a>
+            {getChildren(doc.slug).length > 0 && (
+              <div class="tree-children">
+                {getChildren(doc.slug).map(child => (
+                  <a href={`/docs/${child.slug}`} class={`tree-item ${currentSlug === child.slug ? 'active' : ''}`}>
+                    {child.data.title}
+                  </a>
+                ))}
+              </div>
+            )}
+          </>
+        ))}
+        {topDocs.length === 0 && <p style="color:#999;font-size:13px;padding:12px">暂无文档</p>}
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/">{general.site_title || 'Home'}</a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main"><slot /></main>
+  </div>
+
+  <!-- Mobile toggle -->
+  <button class="mob-toggle" id="mob-toggle" aria-label="菜单">☰</button>
+
+  <script is:inline>
+    var sidebar = document.getElementById('sidebar');
+    document.getElementById('mob-toggle')?.addEventListener('click', function() {
+      sidebar.classList.toggle('open');
+    });
+    sidebar?.addEventListener('click', function(e) {
+      if (e.target.tagName === 'A') sidebar.classList.remove('open');
+    });
+  </script>
+</body>
+</html>
