@@ -22,6 +22,16 @@ const pages = defineCollection({
     date: z.coerce.string().optional(),
     image: z.string().optional(),
     pinned: z.boolean().optional().default(false),
+    video: z.string().optional(),
+  }),
+});
+
+const keywords = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/keywords' }),
+  schema: z.object({
+    keyword: z.string(),
+    link: z.string(),
+    date: z.coerce.string().optional(),
   }),
 });
 
@@ -37,4 +47,37 @@ const messages = defineCollection({
   }),
 });
 
-export const collections = { posts, pages, messages };
+const links = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/links' }),
+  schema: z.object({
+    title: z.string(),
+    url: z.string(),
+    description: z.string().optional(),
+    order: z.number().optional(),
+  }),
+});
+
+const works = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/works' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    category: z.string(),
+    date: z.coerce.string().optional(),
+    image: z.string().optional(),
+    featured: z.boolean().optional().default(false),
+  }),
+});
+
+const testimonials = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/testimonials' }),
+  schema: z.object({
+    name: z.string(),
+    company: z.string().optional(),
+    avatar: z.string().optional(),
+    quote: z.string(),
+    order: z.number().optional(),
+  }),
+});
+
+export const collections = { posts, pages, keywords, messages, links, works, testimonials };
