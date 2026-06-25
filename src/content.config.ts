@@ -57,27 +57,4 @@ const links = defineCollection({
   }),
 });
 
-const works = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/works' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    category: z.string(),
-    date: z.coerce.string().optional(),
-    image: z.string().optional(),
-    featured: z.boolean().optional().default(false),
-  }),
-});
-
-const testimonials = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/testimonials' }),
-  schema: z.object({
-    name: z.string(),
-    company: z.string().optional(),
-    avatar: z.string().optional(),
-    quote: z.string(),
-    order: z.number().optional(),
-  }),
-});
-
-export const collections = { posts, pages, keywords, messages, links, works, testimonials };
+export const collections = { posts, pages, keywords, messages, links };

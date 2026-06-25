@@ -21,6 +21,7 @@ export function templateChainPlugin() {
 
   let resolvedLayoutsDir = '';
   let resolvedComponentsDir = '';
+  let _switching = false; // Guard against double sync during template switch
 
   function getActiveChain() {
     const activePath = path.join(CWD, '.xtcms', 'active-template.json');
@@ -336,11 +337,11 @@ export function templateChainPlugin() {
       resolvedLayoutsDir = resolveDirInChain(chain, 'src/layouts') || '';
       resolvedComponentsDir = resolveDirInChain(chain, 'src/components') || '';
 
-      // Sync template pages
-      syncPageFiles(chain);
-
-      // Generate content.config.ts
-      generateContentConfigSync();
+      // Sync template pages (skip if switch already synced them)
+      if (!_switching) {
+        syncPageFiles(chain);
+        generateContentConfigSync();
+      }
 
       // Set up Vite aliases for template resolution
       // Must modify config.resolve.alias directly for Vite 8 compatibility
@@ -418,6 +419,7 @@ export function templateChainPlugin() {
       function handleTemplateSwitch() {
         console.log('[xtcms] Template switch detected, restarting dev server...');
         setTimeout(async () => {
+          _switching = true;
           const newChain = getActiveChain();
           console.log(`[xtcms] New template chain: ${newChain.join(' → ')}`);
           generateContentConfigSync();
@@ -426,6 +428,7 @@ export function templateChainPlugin() {
           watchTemplateDirs(newChain);
           // Full restart to clear Astro/Vite module cache
           await server.restart();
+          _switching = false;
           console.log('[xtcms] Server restarted with new template');
         }, 300);
       }

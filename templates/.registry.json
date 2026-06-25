@@ -9,15 +9,6 @@
       "installedAt": "2026-06-21T00:00:00Z",
       "path": "templates/blog"
     },
-    "xtocn": {
-      "name": "xtocn",
-      "label": "雄韬企业站模板",
-      "version": "1.0.0",
-      "source": "builtin",
-      "extends": "blog",
-      "installedAt": "2026-06-21T00:00:00Z",
-      "path": "templates/xtocn"
-    },
     "portfolio": {
       "name": "portfolio",
       "label": "作品集模板",
@@ -37,5 +28,5 @@
       "path": "templates/docs"
     }
   },
-  "active": "portfolio"
+  "active": "blog"
 }
