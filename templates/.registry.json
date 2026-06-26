@@ -26,7 +26,16 @@
       "extends": "blog",
       "installedAt": "2026-06-23T08:00:41.351Z",
       "path": "templates/docs"
+    },
+    "selective-solder-equipment": {
+      "name": "selective-solder-equipment",
+      "label": "选择性波峰焊设备企业模板",
+      "version": "1.0.0",
+      "source": "ai-generated",
+      "extends": "blog",
+      "installedAt": "2026-06-25T08:36:24.912Z",
+      "path": "templates/selective-solder-equipment"
     }
   },
-  "active": "blog"
+  "active": "selective-solder-equipment"
 }

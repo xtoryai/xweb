@@ -1,0 +1,20 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+import { getContent } from '$core/content';
+const items=getContent('cases','src/content/cases').filter(c=>!c.data.draft);
+---
+<BaseLayout title="客户案例">
+  <div class="wrap section">
+    <p class="sec-label">真实数据</p>
+    <h1 class="page-h1">同行业工厂已经跑出来了</h1>
+    <p class="page-lead">不是宣传——是产线数据对比。痛点→方案→效果，每个案例都有可量化的改善结果</p>
+    <div class="card-grid cols-3">
+      {items.map(c=>(<a href={`/cases/${c.slug}`} class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="tag">{c.data.industry}</span>{c.data.date&&<span style="font-size:12px;color:var(--gray-400)">{new Date(c.data.date).toLocaleDateString('zh-CN')}</span>}</div>
+        <h3 class="card-title">{c.data.title}</h3>
+        <p class="card-meta" style="font-family:inherit">{c.data.client}</p>
+        {c.data.data_comparison&&<div class="highlight highlight-green">{c.data.data_comparison}</div>}
+      </a>))}
+    </div>
+  </div>
+</BaseLayout>

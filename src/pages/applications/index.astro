@@ -1,0 +1,14 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+import { getContent } from '$core/content';
+const items=getContent('applications','src/content/applications');
+const inds=['汽车电子','消费电子','工业控制','医疗电子'];
+---
+<BaseLayout title="应用方案">
+  <div class="wrap section">
+    <p class="sec-label">应用方案</p>
+    <h1 class="page-h1">每个行业都有针对性的焊接方案</h1>
+    <p class="page-lead">不同行业对可靠性、精度、产能的要求不同——不是一台机器打天下</p>
+    {inds.map(ind=>{const its=items.filter(i=>i.data.industry===ind);if(!its.length)return null;return(<div style="margin-bottom:48px"><h2 style="font-size:20px;font-weight:700;margin-bottom:20px;padding-bottom:8px;border-bottom:3px solid var(--blue);display:inline-block">{ind}</h2><div class="card-grid cols-3" style="margin-top:20px">{its.map(a=>(<a href={`/applications/${a.slug}`} class="card"><h3 class="card-title">{a.data.title}</h3>{a.data.description&&<p class="card-desc">{a.data.description}</p>}<span style="display:inline-block;margin-top:12px;color:var(--blue);font-size:14px;font-weight:500">了解详情 →</span></a>))}</div></div>)})}
+  </div>
+</BaseLayout>

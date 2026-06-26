@@ -1,65 +1,154 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { getContent } from '../core/content';
+import BaseLayout from '$layouts/BaseLayout.astro';
+import { getContent } from '$core/content';
 
-const posts = getContent('posts', 'src/content/posts')
-  .filter(p => !p.data.draft)
-  .slice(0, 6);
+const cases = getContent('cases', 'src/content/cases')
+  .filter(c => !c.data.draft).slice(0, 3);
 ---
 
-<BaseLayout>
-  <section style="padding: 60px 0;">
-    <div style="max-width: var(--xt-container-width, 800px); margin: 0 auto; padding: 0 40px;">
-      <h1 style="font-size: 36px; font-weight: 400; color: var(--xt-primary); margin-bottom: 0.3em;">
-        最新<span style="font-weight: 300;">文章</span>
-      </h1>
-      <p style="font-size: 16px; color: var(--xt-muted); margin-bottom: 48px;">
-        记录思考，分享知识
-      </p>
+<BaseLayout title="良品率诊断">
+  <!-- Hero: direct pain question -->
+  <div class="wrap">
+    <section class="hero">
+      <p class="sec-label">M6→M7 扩产 · 生产总监的 KPI</p>
+      <h1>你们工厂过炉后<br/>人工补焊<em>一天几个工时？</em></h1>
+      <p class="hero-lead">连焊、虚焊、漏焊——返修工位占着3个人，月薪+社保3万6打底，良品率卡在98%上不去。不是焊工的问题，是设备该换了。</p>
+      <div class="hero-actions">
+        <a href="/diagnosis" class="btn btn-blue btn-large">2 分钟良品率自测 →</a>
+        <a href="/roi-calculator" class="btn btn-white btn-large">算一下能省多少</a>
+      </div>
+    </section>
+  </div>
 
-      {posts.length > 0 ? (
-        <div style="display: grid; gap: 32px;">
-          {posts.map(post => (
-            <article style="padding-bottom: 32px; border-bottom: 1px solid #f0f0f0;">
-              <a href={post.data.link || `/posts/${post.slug}`} style="text-decoration: none; color: inherit; display: flex; gap: 24px;">
-                {post.data.image && (
-                  <div style="flex-shrink:0;width:200px;aspect-ratio:16/10;overflow:hidden;border-radius:4px">
-                    <img src={post.data.image} alt={post.data.title} style="width:100%;height:100%;object-fit:cover" />
-                  </div>
-                )}
-                <div style="flex:1;min-width:0">
-                  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                    {post.data.pinned && <span style="font-size: 10px; color: var(--xt-accent); background: #fff2e8; border: 1px solid #ffbb96; padding: 1px 6px; border-radius: 2px; font-weight: 500;">置顶</span>}
-                    <time style="font-size: 13px; color: var(--xt-muted);">
-                      {post.data.date ? new Date(post.data.date).toLocaleDateString('zh-CN') : ''}
-                    </time>
-                  </div>
-                  <h2 style="font-size: 22px; font-weight: 500; color: var(--xt-primary); margin-bottom: 8px; line-height: 1.4;">
-                    {post.data.title}
-                  </h2>
-                  {post.data.description && (
-                    <p style="font-size: 15px; color: var(--xt-muted); line-height: 1.6; margin: 0;">
-                      {post.data.description}
-                    </p>
-                  )}
-                  {Array.isArray(post.data.tags) && post.data.tags.length > 0 && (
-                    <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-                      {post.data.tags.map((tag: string) => (
-                        <span style="font-size: 12px; color: var(--xt-muted); background: #f5f5f5; padding: 2px 8px; border-radius: 2px;">{tag}</span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </a>
-            </article>
+  <!-- Three core pains — what the Production Director actually cares about -->
+  <div class="section-gray">
+    <div class="wrap section" style="padding:60px 0">
+      <p class="sec-label" style="text-align:center">痛点诊断</p>
+      <h2 class="sec-title" style="text-align:center;margin-bottom:32px">三个问题，正在吃掉你的利润</h2>
+      <div class="cols-3 card-grid">
+        <div class="pain-card">
+          <div class="pain-icon">🔧</div>
+          <h3>连焊 · 虚焊 · 漏焊</h3>
+          <p>插件密度一上来，传统波峰焊就扛不住。过炉出来的人工补焊，一个点就是几毛钱——乘以日产量，乘以300天。</p>
+          <div class="pain-loss">典型月损失：2.5-4 万（返修工时+物料）</div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">👥</div>
+          <h3>熟手焊工招不到、留不住</h3>
+          <p>一个熟手焊工 8000-12000/月，还挑活。M6 扩到 M7 时订单涨了，焊工产能先爆——不是加人就能解决的。</p>
+          <div class="pain-loss">3 个返修工 · 年成本 43 万</div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">📉</div>
+          <h3>良品率从 99% → 99.5% 的坎</h3>
+          <p>上游客户质量要求年年提，99% 不够了。手工补焊一致性差，客户投诉、退货、丢订单——不是偶然，是必然。</p>
+          <div class="pain-loss">每 0.1% 不良率 ≈ 年损失 8-15 万（视产量）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick self-check teaser -->
+  <div class="wrap section">
+    <div class="diag-form">
+      <p class="sec-label">30 秒快速自测</p>
+      <h2 style="font-size:22px;font-weight:800;margin-bottom:8px">你们产线焊接处在什么水平？</h2>
+      <p style="color:var(--gray-500);margin-bottom:24px">勾选你工厂的现状，看看如果上选择性波峰焊能改善多少</p>
+
+      <div class="diag-q"><label>过炉后人工补焊工时 / 天？</label>
+        <div class="diag-opts">
+          <span class="diag-opt" data-q="1" data-v="low" onclick="selOpt(this)">＜ 2 小时</span>
+          <span class="diag-opt" data-q="1" data-v="mid" onclick="selOpt(this)">2-8 小时</span>
+          <span class="diag-opt" data-q="1" data-v="high" onclick="selOpt(this)">＞ 8 小时（有人全职返修）</span>
+        </div>
+      </div>
+
+      <div class="diag-q"><label>不良率（连焊/虚焊/漏焊）？</label>
+        <div class="diag-opts">
+          <span class="diag-opt" data-q="2" data-v="low" onclick="selOpt(this)">＜ 1%</span>
+          <span class="diag-opt" data-q="2" data-v="mid" onclick="selOpt(this)">1-3%</span>
+          <span class="diag-opt" data-q="2" data-v="high" onclick="selOpt(this)">＞ 3%（经常被客户投诉）</span>
+        </div>
+      </div>
+
+      <div class="diag-q"><label>日产量规模？</label>
+        <div class="diag-opts">
+          <span class="diag-opt" data-q="3" data-v="low" onclick="selOpt(this)">＜ 200 块</span>
+          <span class="diag-opt" data-q="3" data-v="mid" onclick="selOpt(this)">200-800 块</span>
+          <span class="diag-opt" data-q="3" data-v="high" onclick="selOpt(this)">＞ 800 块</span>
+        </div>
+      </div>
+
+      <div id="quick-result" style="display:none">
+        <div class="diag-result"><div id="quick-result-content"></div></div>
+        <div style="text-align:center;margin-top:20px">
+          <a href="/diagnosis" class="btn btn-blue">做完整诊断 →</a>
+          <a href="/roi-calculator" class="btn btn-white" style="margin-left:12px">算 ROI →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cases - real data -->
+  {cases.length > 0 && (
+    <div class="section-gray">
+      <div class="wrap section" style="padding:60px 0">
+        <p class="sec-label" style="text-align:center">真实数据</p>
+        <h2 class="sec-title" style="text-align:center;margin-bottom:32px">同行业工厂已经跑出来了</h2>
+        <div class="cols-3 card-grid">
+          {cases.map(c => (
+            <a href={`/cases/${c.slug}`} class="card">
+              <p class="card-tag" style="margin-bottom:6px">{c.data.client} · {c.data.industry}</p>
+              <h3 class="card-title">{c.data.title}</h3>
+              {c.data.data_comparison && <div class="highlight highlight-green">{c.data.data_comparison}</div>}
+            </a>
           ))}
         </div>
-      ) : (
-        <div style="text-align: center; padding: 80px 0; color: var(--xt-muted);">
-          还没有文章，在管理后台开始写作吧
+        <div style="text-align:center;margin-top:28px">
+          <a href="/cases" class="btn btn-white">查看全部案例 →</a>
         </div>
-      )}
+      </div>
     </div>
-  </section>
+  )}
 
+  <!-- CTA -->
+  <div class="wrap section" style="text-align:center">
+    <h2 class="sec-title">你们产线现在良品率多少？返修几个人？</h2>
+    <p class="sec-desc" style="margin:0 auto 24px">花 2 分钟做个诊断，看看如果上选择性波峰焊，你的返修工时能压到多少、几个月回本。不做诊断，下半年还是老样子。</p>
+    <div class="hero-actions" style="justify-content:center">
+      <a href="/diagnosis" class="btn btn-blue btn-large">开始良品率诊断 →</a>
+      <a href="/contact" class="btn btn-white btn-large">直接约工程师聊</a>
+    </div>
+  </div>
+
+  <script is:inline>
+    const sel = {};
+    function selOpt(el) {
+      const q = el.dataset.q, v = el.dataset.v;
+      sel[q] = v;
+      el.parentElement.querySelectorAll('.diag-opt').forEach(o=>o.classList.remove('selected'));
+      el.classList.add('selected');
+      if (sel[1] && sel[2] && sel[3]) showQuickResult();
+    }
+    function showQuickResult() {
+      const r = document.getElementById('quick-result');
+      const c = document.getElementById('quick-result-content');
+      r.style.display = 'block';
+
+      const score = {low:0,mid:1,high:2};
+      const total = score[sel[1]] + score[sel[2]] + score[sel[3]];
+
+      let msg = '', cls = 'diag-result';
+      if (total <= 1) {
+        msg = '<h3>✅ 你的产线状况不错</h3><p style="font-size:16px;color:var(--gray-700);margin-top:8px">但如果正在扩产或客户质量要求提高，选择性波峰焊可以帮你提前锁定良品率，避免扩产期翻车。</p><p style="margin-top:12px;font-weight:600">预估改善空间：返修工时 -50%，良品率 +0.3%</p>';
+      } else if (total <= 3) {
+        msg = '<h3>⚠️ 你的产线有明确的改善空间</h3><p style="font-size:16px;color:var(--gray-700);margin-top:8px">根据同行数据，你这个阶段上选择性波峰焊，效果最明显——返修工时能压到现在的 1/4。</p><p style="margin-top:12px;font-weight:600">预估改善空间：返修工时 -70%，良品率 +0.5-1%</p>';
+      } else {
+        msg = '<h3>🔴 你的产线正在大量烧钱</h3><p style="font-size:16px;color:var(--red);margin-top:8px">返修工位占着3个人、不良率超过3%——不是焊工的问题，是设备该换了。同行业上了选择性波峰焊后，返修从3人降到0.5人。</p><p style="margin-top:12px;font-weight:600">预估改善空间：返修工时 -80%，良品率 +1-2%，年省 35-50 万</p>';
+      }
+
+      c.innerHTML = msg;
+      r.scrollIntoView({behavior:'smooth'});
+    }
+  </script>
 </BaseLayout>

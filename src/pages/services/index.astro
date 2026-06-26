@@ -1,0 +1,16 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+import { getContent } from '$core/content';
+const services=getContent('services','src/content/services');
+---
+<BaseLayout title="服务支持">
+  <div class="wrap section">
+    <p class="sec-label">服务支持</p>
+    <h1 class="page-h1">设备到位只是开始</h1>
+    <p class="page-lead">从安装调试到工艺优化，我们的工程师跟到你的良品率达到目标为止</p>
+    <div class="card-grid cols-3" style="margin-bottom:60px">
+      {services.map(s=>(<div class="card"><h3 class="card-title">{s.data.title}</h3>{s.data.description&&<p class="card-desc">{s.data.description}</p>}{s.body&&<div style="margin-top:8px;font-size:14px;color:var(--gray-700);line-height:1.8"><Fragment set:html={s.body} /></div>}</div>))}
+    </div>
+    <div class="cta-block"><h3>有产线需要调试？</h3><a href="/contact" class="btn btn-blue">联系服务团队 →</a></div>
+  </div>
+</BaseLayout>

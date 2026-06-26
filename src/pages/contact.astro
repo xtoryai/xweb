@@ -1,21 +1,39 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { getFileContent } from '../core/content';
-const general = getFileContent('src/content/settings/general.yml') || {};
+import BaseLayout from '$layouts/BaseLayout.astro';
+const general = await import('node:fs').then(fs=>{try{const r=fs.readFileSync('src/content/settings/general.yml','utf8');const d={};for(const l of r.split('\n')){const m=l.match(/^(\w[\w-]*):\s*(.*)\s*$/);if(m)d[m[1]]=m[2].trim().replace(/^["']|["']$/g,'');}return d}catch{return{}}});
+
+let submitted=false,error='';
+if(Astro.request.method==='POST'){try{const fd=await Astro.request.formData();const n=fd.get('name')?.toString()||'',ph=fd.get('phone')?.toString()||'';if(!n||!ph){error='请填写姓名和电话'}else{const fs=await import('node:fs');const pt=await import('node:path');const ds=new Date().toISOString().slice(0,10).replace(/-/g,'');const ts=Date.now().toString(36);const fp=pt.join(process.cwd(),'src/content/inquiries',`${ds}-${ts}.md`);const ct=`---\nname:"${n}"\ncompany:"${fd.get('company')?.toString()||''}"\nphone:"${ph}"\nemail:"${fd.get('email')?.toString()||''}"\nmessage:"${fd.get('message')?.toString()||''}"\ndate:"${new Date().toISOString().slice(0,10)}"\nstatus:pending\n---\n`;fs.mkdirSync(pt.dirname(fp),{recursive:true});fs.writeFileSync(fp,ct,'utf8');submitted=true}}catch(e){error=`提交失败:${e.message}`}}
 ---
-<BaseLayout title="留言">
-  <section style="padding:60px 0">
-    <div style="max-width:600px;margin:0 auto;padding:0 40px">
-      <h1 style="font-size:34px;font-weight:400;color:var(--xt-primary);margin-bottom:0.3em">给我<span style="font-weight:300">留言</span></h1>
-      <p style="font-size:16px;color:var(--xt-muted);margin-bottom:40px">有任何问题或建议，欢迎留言</p>
-      <form method="POST" action="/api/contact" style="display:grid;gap:20px">
-        <input name="name" placeholder="姓名 *" required style="padding:12px 16px;border:1px solid #ddd;font-size:16px;width:100%;border-radius:4px" />
-        <input name="company" placeholder="公司" style="padding:12px 16px;border:1px solid #ddd;font-size:16px;width:100%;border-radius:4px" />
-        <input name="phone" placeholder="电话 *" required style="padding:12px 16px;border:1px solid #ddd;font-size:16px;width:100%;border-radius:4px" />
-        <input name="email" placeholder="邮箱" type="email" style="padding:12px 16px;border:1px solid #ddd;font-size:16px;width:100%;border-radius:4px" />
-        <textarea name="message" placeholder="留言内容" rows="5" style="padding:12px 16px;border:1px solid #ddd;font-size:16px;width:100%;resize:vertical;border-radius:4px"></textarea>
-        <button type="submit" style="padding:12px 32px;background:#000;color:#fff;border:none;font-size:16px;cursor:pointer;border-radius:4px;justify-self:start">发送</button>
-      </form>
+<BaseLayout title="预约诊断">
+  <div class="wrap section">
+    <p class="sec-label">预约诊断</p>
+    <h1 class="page-h1">让你们产线的数据说话</h1>
+    <p class="page-lead">留下联系方式，我们的工程师带良品率自测表上门，花 15 分钟给你一个完整的产线诊断报告</p>
+    <div class="form-grid">
+      <div>
+        <div class="info-card"><span class="info-icon">📞</span><div><strong>电话</strong><span>{general.phone||'400-xxx-xxxx'}</span></div></div>
+        <div class="info-card"><span class="info-icon">📧</span><div><strong>邮箱</strong><span>{general.email||'sales@example.com'}</span></div></div>
+        <div class="info-card"><span class="info-icon">📍</span><div><strong>地址</strong><span>{general.address||'欢迎来访'}</span></div></div>
+      </div>
+      <div class="form-card">
+        {submitted ? (
+          <div style="text-align:center;padding:40px 0"><p style="font-size:40px;margin-bottom:12px">✅</p><h2 style="font-size:20px;font-weight:700;margin-bottom:8px">已收到</h2><p style="color:var(--gray-500)">我们会在 24 小时内联系你</p></div>
+        ) : (
+          <>
+            <h2 style="font-size:18px;font-weight:700;margin-bottom:20px">留下联系方式</h2>
+            {error && <div style="background:var(--red-light);color:var(--red);font-size:14px;padding:10px 14px;border-radius:6px;margin-bottom:16px">{error}</div>}
+            <form method="POST">
+              <div class="form-group"><label>姓名 *</label><input type="text" name="name" required /></div>
+              <div class="form-group"><label>公司</label><input type="text" name="company" /></div>
+              <div class="form-group"><label>电话 *</label><input type="tel" name="phone" required /></div>
+              <div class="form-group"><label>邮箱</label><input type="email" name="email" /></div>
+              <div class="form-group"><label>想解决什么问题？</label><textarea name="message" rows="3" placeholder="比如：过炉后连焊多、返修工时高、准备扩产..."></textarea></div>
+              <button type="submit" class="btn-submit">提交</button>
+            </form>
+          </>
+        )}
+      </div>
     </div>
-  </section>
+  </div>
 </BaseLayout>

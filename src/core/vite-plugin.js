@@ -343,44 +343,66 @@ export function templateChainPlugin() {
         generateContentConfigSync();
       }
 
-      // Set up Vite aliases for template resolution
-      // Must modify config.resolve.alias directly for Vite 8 compatibility
+      // Set up Vite aliases — regex-based for reliable cross-Vite-version prefix matching
+      const toPosix = (p) => p.replace(/\\/g, '/');
       if (!config.resolve) config.resolve = {};
       if (!config.resolve.alias) config.resolve.alias = [];
 
+      // Vite 7+: string `find` may not do prefix matching reliably. Use regex.
       if (resolvedLayoutsDir) {
-        config.resolve.alias.push({ find: '$layouts', replacement: resolvedLayoutsDir + '/' });
+        const dir = toPosix(resolvedLayoutsDir);
+        config.resolve.alias.push({
+          find: /^\$layouts\/(.+)/,
+          replacement: `${dir}/$1`,
+        });
       }
       if (resolvedComponentsDir) {
-        config.resolve.alias.push({ find: '$template', replacement: resolvedComponentsDir + '/' });
+        const dir = toPosix(resolvedComponentsDir);
+        config.resolve.alias.push({
+          find: /^\$template\/(.+)/,
+          replacement: `${dir}/$1`,
+        });
       }
-      config.resolve.alias.push({ find: '$core', replacement: path.join(CWD, 'src', 'core') + '/' });
+      // $core → src/core/ — always works regardless of template chain
+      config.resolve.alias.push({
+        find: /^\$core\/(.+)/,
+        replacement: `${toPosix(path.join(CWD, 'src', 'core'))}/$1`,
+      });
 
-      console.log('[xtcms] Aliases set:', resolvedLayoutsDir ? 'layouts ✓' : 'layouts ✗', resolvedComponentsDir ? 'components ✓' : 'components ✗');
+      console.log('[xtcms] Aliases set:',
+        resolvedLayoutsDir ? `layouts → ${toPosix(resolvedLayoutsDir)}` : 'layouts ✗',
+        resolvedComponentsDir ? `components ✓` : 'components ✗');
 
       return config;
     },
 
     resolveId(id) {
-      // Resolve $layouts/ imports to the template chain layout directory
+      // Resolve $layouts/ — search template chain dynamically (child → parent)
       if (id.startsWith('$layouts/')) {
         const relPath = id.slice('$layouts/'.length);
-        const resolved = path.join(resolvedLayoutsDir, relPath);
-        if (fs.existsSync(resolved)) return resolved;
-        // Try without extension
-        for (const ext of ['.astro', '.svelte', '.js', '.ts']) {
-          const withExt = resolved + ext;
-          if (fs.existsSync(withExt)) return withExt;
+        const chain = getActiveChain();
+        for (let i = chain.length - 1; i >= 0; i--) {
+          const tplDir = getTemplateDir(chain[i]);
+          if (!tplDir) continue;
+          const filePath = path.join(tplDir, 'src', 'layouts', relPath);
+          if (fs.existsSync(filePath)) return filePath;
+          for (const ext of ['.astro', '.svelte', '.js', '.ts']) {
+            if (fs.existsSync(filePath + ext)) return filePath + ext;
+          }
         }
       }
-      // Resolve $template/ imports
+      // Resolve $template/ — search template chain dynamically
       if (id.startsWith('$template/')) {
         const relPath = id.slice('$template/'.length);
-        const resolved = path.join(resolvedComponentsDir, relPath);
-        if (fs.existsSync(resolved)) return resolved;
-        for (const ext of ['.astro', '.svelte', '.js', '.ts']) {
-          const withExt = resolved + ext;
-          if (fs.existsSync(withExt)) return withExt;
+        const chain = getActiveChain();
+        for (let i = chain.length - 1; i >= 0; i--) {
+          const tplDir = getTemplateDir(chain[i]);
+          if (!tplDir) continue;
+          const filePath = path.join(tplDir, 'src', 'components', relPath);
+          if (fs.existsSync(filePath)) return filePath;
+          for (const ext of ['.astro', '.svelte', '.js', '.ts']) {
+            if (fs.existsSync(filePath + ext)) return filePath + ext;
+          }
         }
       }
       // Resolve $core/ imports

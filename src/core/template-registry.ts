@@ -68,6 +68,7 @@ export interface ResolvedFile {
 
 let _registry: TemplateRegistry | null = null;
 let _activeChain: string[] | null = null;
+let _registryMtime = 0; // File mtime when cached — bust on external writes
 
 // ── Registry ──
 
@@ -76,10 +77,21 @@ const ACTIVE_PATH = '.xtcms/active-template.json';
 
 /**
  * Read the template registry from disk.
+ * Auto-busts cache if the registry file was modified externally.
  */
 export function getRegistry(): TemplateRegistry {
-  if (_registry) return _registry;
   const p = path.join(process.cwd(), REGISTRY_PATH);
+  // Check mtime to auto-bust cache on external writes (e.g., CLI, AI generation)
+  if (_registry) {
+    try {
+      const stat = fs.statSync(p);
+      if (stat.mtimeMs > _registryMtime) {
+        _registry = null; // Force reload
+        _activeChain = null;
+      }
+    } catch { /* file missing, reload */ }
+  }
+  if (_registry) return _registry;
   if (!fs.existsSync(p)) {
     // Initialize with blog as default
     _registry = {
@@ -96,10 +108,12 @@ export function getRegistry(): TemplateRegistry {
       },
       active: 'blog',
     };
+    _registryMtime = Date.now();
     return _registry;
   }
   const raw = fs.readFileSync(p, 'utf8');
   _registry = JSON.parse(raw);
+  _registryMtime = fs.statSync(p).mtimeMs;
   return _registry!;
 }
 
@@ -107,9 +121,11 @@ export function getRegistry(): TemplateRegistry {
  * Write registry back to disk.
  */
 export function saveRegistry(reg: TemplateRegistry): void {
-  fs.mkdirSync(path.dirname(path.join(process.cwd(), REGISTRY_PATH)), { recursive: true });
-  fs.writeFileSync(path.join(process.cwd(), REGISTRY_PATH), JSON.stringify(reg, null, 2));
+  const p = path.join(process.cwd(), REGISTRY_PATH);
+  fs.mkdirSync(path.dirname(p), { recursive: true });
+  fs.writeFileSync(p, JSON.stringify(reg, null, 2));
   _registry = reg;
+  _registryMtime = fs.statSync(p).mtimeMs;
 }
 
 /**

@@ -1,0 +1,39 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+---
+<BaseLayout title="ROI 计算器">
+  <div class="wrap section">
+    <p class="sec-label">ROI 计算</p>
+    <h1 class="page-h1">你现在的产线，一年在返修上烧多少钱？</h1>
+    <p class="page-lead">填几个数字，秒算选择性波峰焊的回本周期</p>
+    <div class="roi-grid">
+      <div class="roi-form">
+        <div class="form-group"><label>当前不良率 (%)</label><input type="number" id="defect-before" value="2.5" step="0.1" /></div>
+        <div class="form-group"><label>期望不良率 (%)</label><input type="number" id="defect-after" value="0.3" step="0.1" /></div>
+        <div class="form-group"><label>日产量 (块)</label><input type="number" id="boards-day" value="500" /></div>
+        <div class="form-group"><label>每块不良板返修成本 (元)</label><input type="number" id="cost-per-defect" value="80" /></div>
+        <div class="form-group"><label>设备投资 (万元)</label><input type="number" id="machine-cost" value="35" step="0.1" /></div>
+        <div class="form-group"><label>年工作天数</label><input type="number" id="work-days" value="300" /></div>
+      </div>
+      <div class="roi-result">
+        <h3>年减少不良板</h3>
+        <p class="val"><span id="result-boards">—</span> 块</p>
+        <h3>年节省返修成本</h3>
+        <p class="val green"><span id="result-savings">—</span> 万元</p>
+        <h3>投资回本周期</h3>
+        <p class="val blue"><span id="result-payback">—</span> 个月</p>
+        <h3>3 年累计节省</h3>
+        <p class="val green"><span id="result-3year">—</span> 万元</p>
+        <div id="result-msg" style="margin-top:16px;font-size:14px;padding:12px;border-radius:8px;display:none"></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px">
+      <a href="/contact" class="btn btn-blue">想算更精确？约工程师上门 →</a>
+    </div>
+  </div>
+
+  <script is:inline>
+    function calc(){const D=parseFloat(document.getElementById('defect-before').value)||0;const d=parseFloat(document.getElementById('defect-after').value)||0;const B=parseFloat(document.getElementById('boards-day').value)||0;const C=parseFloat(document.getElementById('cost-per-defect').value)||0;const M=parseFloat(document.getElementById('machine-cost').value)||0;const W=parseFloat(document.getElementById('work-days').value)||300;const before=D/100;const after=d/100;if(after>=before){document.getElementById('result-msg').textContent='⚠ 期望不良率应低于当前不良率';document.getElementById('result-msg').style.display='block';document.getElementById('result-msg').style.background='var(--red-light)';document.getElementById('result-msg').style.color='var(--red)';return}const bpy=B*W;const reduced=Math.round(bpy*before-bpy*after);const annualSavings=(reduced*C)/10000;const paybackMonths=annualSavings>0?Math.round((M/annualSavings)*12):999;document.getElementById('result-boards').textContent=reduced.toLocaleString();document.getElementById('result-savings').textContent=annualSavings.toFixed(1);document.getElementById('result-payback').textContent=paybackMonths>=999?'立即回本':paybackMonths;document.getElementById('result-3year').textContent=(annualSavings*3).toFixed(1);const msg=document.getElementById('result-msg');if(paybackMonths<=6){msg.textContent='✅ 回本不到半年——你的产线急需升级';msg.style.background='var(--green-light)';msg.style.color='var(--green)'}else if(paybackMonths<=18){msg.textContent='👍 '+paybackMonths+' 个月回本，设备投资合理';msg.style.background='var(--blue-light)';msg.style.color='var(--blue)'}else{msg.textContent='💡 建议联系我们做精准测算';msg.style.background='var(--amber-light)';msg.style.color='var(--amber)'}msg.style.display='block'}
+    document.querySelectorAll('.roi-form input').forEach(el=>el.addEventListener('input',calc));calc();
+  </script>
+</BaseLayout>

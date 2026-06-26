@@ -6,3 +6,4 @@ dist/
 *.log
 .astro/
 .xtcms/
+templates/selective-solder-equipment

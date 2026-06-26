@@ -1,0 +1,14 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+import { getContent } from '$core/content';
+const kb=getContent('knowledge-base','src/content/knowledge-base');
+const cats=[{key:'工艺指南',icon:'📖'},{key:'FAQ',icon:'❓'},{key:'视频教程',icon:'🎬'}];
+---
+<BaseLayout title="工艺知识库">
+  <div class="wrap section">
+    <p class="sec-label">工艺知识库</p>
+    <h1 class="page-h1">从产线来的真问题，不是教科书</h1>
+    <p class="page-lead">波峰焊工艺参数、常见缺陷解决、设备维护——都是跑客户时积累的一手经验</p>
+    {cats.map(cat=>{const items=kb.filter(k=>k.data.category===cat.key);return(<div style="margin-bottom:40px"><h2 style="font-size:20px;font-weight:700;margin-bottom:16px">{cat.icon} {cat.key}</h2><div class="card-grid cols-3">{items.length>0?items.map(k=>(<a href={`/knowledge-base/${k.slug}`} class="card"><h3 class="card-title">{k.data.title}</h3>{k.data.summary&&<p class="card-desc">{k.data.summary}</p>}</a>)):<p style="font-size:14px;color:var(--gray-300);padding:20px">暂无{cat.key}内容</p>}</div></div>)})}
+  </div>
+</BaseLayout>
