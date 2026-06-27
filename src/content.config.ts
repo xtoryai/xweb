@@ -95,7 +95,7 @@ const cases = defineCollection({
   }),
 });
 
-const knowledge-base = defineCollection({
+const knowledge_base = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/knowledge-base' }),
   schema: z.object({
     title: z.string(),
@@ -129,4 +129,4 @@ const inquiries = defineCollection({
   }),
 });
 
-export const collections = { posts, pages, keywords, messages, links, equipment, applications, cases, knowledge-base, services, inquiries };
+export const collections = { posts, pages, keywords, messages, links, equipment, applications, cases, "knowledge-base": knowledge_base, services, inquiries };

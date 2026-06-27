@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '$layouts/BaseLayout.astro';
-import { getContent } from '$core/content';
+import { getContent, renderMarkdown } from '$core/content';
 const {slug}=Astro.params;const i=getContent('cases','src/content/cases').find(x=>x.slug===slug);
 if(!i)return new Response(null,{status:302,headers:{Location:'/cases'}});
 ---
@@ -14,7 +14,7 @@ if(!i)return new Response(null,{status:302,headers:{Location:'/cases'}});
     {i.data.pain_points&&<div class="block block-pain"><h3>⚠️ 客户痛点</h3><p>{i.data.pain_points}</p></div>}
     {i.data.solution&&<div class="block block-solution"><h3>🔧 解决方案</h3><p>{i.data.solution}</p></div>}
     {i.data.data_comparison&&<div class="block block-result"><h3>📊 效果对比</h3><p class="big">{i.data.data_comparison}</p></div>}
-    {i.body&&<div class="article"><Fragment set:html={i.body} /></div>}
+    {i.body&&<div class="article"><Fragment set:html={renderMarkdown(i.body)} /></div>}
     <div class="cta-block"><h3>你的产线也能达到这个效果</h3><a href="/diagnosis" class="btn btn-blue" style="margin-right:12px">做良品率诊断</a><a href="/contact" class="btn btn-white">联系我们</a></div>
   </article>
 </BaseLayout>

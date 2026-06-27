@@ -1,5 +1,25 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { marked } from 'marked';
+
+// Configure marked for safe rendering
+marked.setOptions({
+  gfm: true,
+  breaks: false,
+});
+
+/**
+ * Convert markdown body text to HTML. Used by template pages to render
+ * article content (tables, headings, lists, etc.) from markdown sources.
+ */
+export function renderMarkdown(md: string): string {
+  if (!md) return '';
+  try {
+    return marked.parse(md) as string;
+  } catch {
+    return md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+}
 
 /**
  * Parse YAML frontmatter from a markdown file.

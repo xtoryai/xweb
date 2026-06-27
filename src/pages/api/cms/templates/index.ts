@@ -122,17 +122,34 @@ export const POST: APIRoute = async ({ request }) => {
         reg.active = tplName;
         saveRegistry(reg);
 
-        // Trigger rebuild if requested (production mode)
+        // Trigger rebuild in production (using full npm path for reliability)
         if (rebuild) {
-          const { exec } = await import('node:child_process');
-          exec('npm run build', { cwd, timeout: 120000 }, (err, stdout, stderr) => {
-            if (err) {
-              console.error('[xtcms] Rebuild failed:', stderr);
+          const { spawn } = await import('node:child_process');
+          // Find npm path — exec('npm') often fails in production because
+          // the Node process doesn't inherit the shell's PATH correctly
+          const npmPath = process.env.NPM_PATH || 'npm';
+          const child = spawn(npmPath, ['run', 'build'], {
+            cwd,
+            timeout: 300000,
+            stdio: 'pipe',
+            shell: true,
+          });
+
+          let stdout = '', stderr = '';
+          child.stdout.on('data', (d: Buffer) => { stdout += d.toString(); });
+          child.stderr.on('data', (d: Buffer) => { stderr += d.toString(); });
+
+          child.on('close', (code: number) => {
+            if (code === 0) {
+              console.log('[xtcms] Rebuild complete. PM2 will restart the process.');
+              const restartFlag = path.join(cwd, '.xtcms', 'needs-restart');
+              fs.writeFileSync(restartFlag, Date.now().toString());
             } else {
-              console.log('[xtcms] Rebuild complete. Restart process to apply.');
-              // Write a restart signal for PM2/systemd
-              fs.writeFileSync(path.join(cwd, '.xtcms', 'needs-restart'), Date.now().toString());
+              console.error('[xtcms] Rebuild failed (exit ' + code + '):', stderr.slice(-500));
             }
+          });
+          child.on('error', (err: Error) => {
+            console.error('[xtcms] Rebuild spawn error:', err.message);
           });
         }
 

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '$layouts/BaseLayout.astro';
-import { getContent } from '$core/content';
+import { getContent, renderMarkdown } from '$core/content';
 const {slug}=Astro.params;const items=getContent('equipment','src/content/equipment');const item=items.find(i=>i.slug===slug);
 if(!item)return new Response(null,{status:302,headers:{Location:'/equipment'}});
 ---
@@ -12,7 +12,7 @@ if(!item)return new Response(null,{status:302,headers:{Location:'/equipment'}});
     {item.data.summary&&<p style="font-size:16px;color:var(--gray-700);line-height:1.8;margin-bottom:24px">{item.data.summary}</p>}
     {item.data.scenarios&&<div class="tags" style="margin-bottom:28px">{(Array.isArray(item.data.scenarios)?item.data.scenarios:[]).map(s=><span class="tag">{s}</span>)}</div>}
     {item.data.specifications&&<div class="specs">{item.data.specifications}</div>}
-    {item.body&&<div class="article"><Fragment set:html={item.body} /></div>}
+    {item.body&&<div class="article"><Fragment set:html={renderMarkdown(item.body)} /></div>}
     <div class="cta-block"><h3>想了解这台设备适不适合你的产线？</h3><a href="/diagnosis" class="btn btn-blue" style="margin-right:12px">做良品率诊断</a><a href="/contact" class="btn btn-white">预约演示</a></div>
   </article>
 </BaseLayout>

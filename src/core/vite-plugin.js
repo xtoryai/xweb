@@ -22,11 +22,45 @@ export function templateChainPlugin() {
   let resolvedLayoutsDir = '';
   let resolvedComponentsDir = '';
   let _switching = false; // Guard against double sync during template switch
+  let _lastSyncedChain = ''; // Skip redundant syncs during multi-page build
+  let _aliasesSetup = false; // Only push aliases once
 
+  /**
+   * Resolve the active template chain dynamically from the registry.
+   * NEVER trusts the cached chain in active-template.json — it may be stale
+   * or written by a CMS activation that had a broken registry at that moment.
+   */
   function getActiveChain() {
     const activePath = path.join(CWD, '.xtcms', 'active-template.json');
+    let activeName = 'blog';
     if (fs.existsSync(activePath)) {
-      return JSON.parse(fs.readFileSync(activePath, 'utf8')).chain || ['blog'];
+      const marker = JSON.parse(fs.readFileSync(activePath, 'utf8'));
+      activeName = marker.name || 'blog';
+    }
+
+    // Resolve chain dynamically from registry extends chain
+    const regPath = path.join(CWD, 'templates', '.registry.json');
+    if (fs.existsSync(regPath)) {
+      const reg = JSON.parse(fs.readFileSync(regPath, 'utf8'));
+      const installed = reg.installed || {};
+      const chain = [];
+      const visited = new Set();
+      let current = activeName;
+      while (current) {
+        if (visited.has(current)) break; // circular
+        visited.add(current);
+        const entry = installed[current];
+        if (!entry) {
+          // Template not in registry — if it's blog, add it as root
+          if (current === 'blog') { chain.unshift('blog'); break; }
+          // Unknown template, but still include it
+          chain.unshift(current);
+          break;
+        }
+        chain.unshift(current);
+        current = entry.extends || null;
+      }
+      if (chain.length > 0) return chain;
     }
     return ['blog'];
   }
@@ -158,11 +192,16 @@ export function templateChainPlugin() {
   /**
    * Generate content.config.ts from template chain (inline to avoid import issues).
    */
+  let _lastConfigContent = '';
+
   function generateContentConfigSync() {
     try {
       const target = path.join(CWD, 'src', 'content.config.ts');
       const content = buildContentConfigContent();
+      // Skip write if content unchanged (prevents unnecessary Vite re-compilation)
+      if (content === _lastConfigContent) return;
       fs.writeFileSync(target, content);
+      _lastConfigContent = content;
       console.log('[xtcms] Generated content.config.ts');
     } catch (e) {
       console.error('[xtcms] Failed to generate content.config.ts:', e.message);
@@ -220,7 +259,9 @@ export function templateChainPlugin() {
         return `    ${f.name}: ${zod},`;
       });
 
-      lines.push('', `const ${col.name} = defineCollection({`);
+      // Sanitize collection name for JS identifier (hyphens → underscores)
+      const varName = col.name.replace(/[^a-zA-Z0-9_$]/g, '_');
+      lines.push('', `const ${varName} = defineCollection({`);
       lines.push(`  loader: glob({ pattern: '**/*.md', base: './${col.folder}' }),`);
       lines.push(`  schema: z.object({`);
       lines.push(schemaLines.join('\n'));
@@ -228,8 +269,14 @@ export function templateChainPlugin() {
       lines.push(`});`);
     }
 
-    const names = folderCollections.map(c => c.name);
-    lines.push('', `export const collections = { ${names.join(', ')} };`);
+    const varNames = folderCollections.map(c => c.name.replace(/[^a-zA-Z0-9_$]/g, '_'));
+    // Build export object with proper key:value for names that needed sanitizing
+    const exportEntries = folderCollections.map((c, i) => {
+      const orig = c.name;
+      const safe = varNames[i];
+      return orig === safe ? safe : `"${orig}": ${safe}`;
+    });
+    lines.push('', `export const collections = { ${exportEntries.join(', ')} };`);
     return lines.join('\n');
   }
 
@@ -331,47 +378,48 @@ export function templateChainPlugin() {
 
     async config(config) {
       const chain = getActiveChain();
-      console.log(`[xtcms] Template chain: ${chain.join(' → ')}`);
+      const chainKey = chain.join('→');
+      const isNewChain = _lastSyncedChain !== chainKey;
 
-      // Resolve directories for aliases
-      resolvedLayoutsDir = resolveDirInChain(chain, 'src/layouts') || '';
-      resolvedComponentsDir = resolveDirInChain(chain, 'src/components') || '';
+      // Only sync/regenerate on chain change. Vite calls config() per SSR entry
+      // during build — syncing every time is wasteful and triggers re-compilation.
+      if (isNewChain || !_lastSyncedChain) {
+        console.log(`[xtcms] Template chain: ${chain.join(' → ')}`);
 
-      // Sync template pages (skip if switch already synced them)
-      if (!_switching) {
-        syncPageFiles(chain);
-        generateContentConfigSync();
+        resolvedLayoutsDir = resolveDirInChain(chain, 'src/layouts') || '';
+        resolvedComponentsDir = resolveDirInChain(chain, 'src/components') || '';
+
+        if (!_switching) {
+          syncPageFiles(chain);
+          generateContentConfigSync();
+        }
+        _lastSyncedChain = chainKey;
       }
 
-      // Set up Vite aliases — regex-based for reliable cross-Vite-version prefix matching
+      // Aliases: only push once. Duplicate pushes bloat the array on repeated calls.
       const toPosix = (p) => p.replace(/\\/g, '/');
       if (!config.resolve) config.resolve = {};
       if (!config.resolve.alias) config.resolve.alias = [];
 
-      // Vite 7+: string `find` may not do prefix matching reliably. Use regex.
-      if (resolvedLayoutsDir) {
-        const dir = toPosix(resolvedLayoutsDir);
+      if (!_aliasesSetup) {
+        if (resolvedLayoutsDir) {
+          config.resolve.alias.push({
+            find: /^\$layouts\/(.+)/,
+            replacement: `${toPosix(resolvedLayoutsDir)}/$1`,
+          });
+        }
+        if (resolvedComponentsDir) {
+          config.resolve.alias.push({
+            find: /^\$template\/(.+)/,
+            replacement: `${toPosix(resolvedComponentsDir)}/$1`,
+          });
+        }
         config.resolve.alias.push({
-          find: /^\$layouts\/(.+)/,
-          replacement: `${dir}/$1`,
+          find: /^\$core\/(.+)/,
+          replacement: `${toPosix(path.join(CWD, 'src', 'core'))}/$1`,
         });
+        _aliasesSetup = true;
       }
-      if (resolvedComponentsDir) {
-        const dir = toPosix(resolvedComponentsDir);
-        config.resolve.alias.push({
-          find: /^\$template\/(.+)/,
-          replacement: `${dir}/$1`,
-        });
-      }
-      // $core → src/core/ — always works regardless of template chain
-      config.resolve.alias.push({
-        find: /^\$core\/(.+)/,
-        replacement: `${toPosix(path.join(CWD, 'src', 'core'))}/$1`,
-      });
-
-      console.log('[xtcms] Aliases set:',
-        resolvedLayoutsDir ? `layouts → ${toPosix(resolvedLayoutsDir)}` : 'layouts ✗',
-        resolvedComponentsDir ? `components ✓` : 'components ✗');
 
       return config;
     },

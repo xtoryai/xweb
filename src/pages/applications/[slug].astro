@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '$layouts/BaseLayout.astro';
-import { getContent } from '$core/content';
+import { getContent, renderMarkdown } from '$core/content';
 const {slug}=Astro.params;const i=getContent('applications','src/content/applications').find(x=>x.slug===slug);
 if(!i)return new Response(null,{status:302,headers:{Location:'/applications'}});
 ---
@@ -10,7 +10,7 @@ if(!i)return new Response(null,{status:302,headers:{Location:'/applications'}});
     <span class="tag">{i.data.industry}</span>
     <h1 class="page-h1">{i.data.title}</h1>
     {i.data.description&&<p style="font-size:16px;color:var(--gray-700);line-height:1.8;margin:12px 0 32px">{i.data.description}</p>}
-    {i.body&&<div class="article"><Fragment set:html={i.body} /></div>}
+    {i.body&&<div class="article"><Fragment set:html={renderMarkdown(i.body)} /></div>}
     <div class="cta-block"><h3>需要针对你们行业的方案？</h3><a href="/diagnosis" class="btn btn-blue" style="margin-right:12px">做诊断</a><a href="/contact" class="btn btn-white">联系我们</a></div>
   </article>
 </BaseLayout>
