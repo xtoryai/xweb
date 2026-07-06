@@ -5,7 +5,11 @@ import { t, getFrontendLocale } from '../core/i18n-frontend';
 const locale = getFrontendLocale(Astro.request);
 ---
 
-<BaseLayout title={t('留言', locale)} showRightSidebar={false}>
+<BaseLayout
+  title={t('留言', locale)}
+  description={t('有任何问题或建议，欢迎留言', locale)}
+  showRightSidebar={false}
+>
   <div class="page-wrap">
     <h1 class="contact-heading">{t('留言', locale)}</h1>
     <p class="contact-sub">有任何问题或建议，欢迎留言</p>

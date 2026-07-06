@@ -11,9 +11,34 @@ if (!post) return Astro.redirect('/404');
 if (post.data.link) return Astro.redirect(post.data.link);
 
 const rawHtml = post.body ? marked.parse(post.body) : '';
+const postSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description || '',
+  datePublished: post.data.date || undefined,
+  dateModified: post.data.updated || post.data.date || undefined,
+  author: {
+    '@type': 'Person',
+    name: post.data.author || '长河',
+  },
+  image: post.data.image || undefined,
+  url: Astro.url.href,
+};
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} showRightSidebar={false}>
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  ogType="article"
+  ogImage={post.data.image}
+  schema={postSchema}
+  publishedTime={post.data.date}
+  modifiedTime={post.data.updated || post.data.date}
+  author={post.data.author || '长河'}
+  canonicalUrl={Astro.url.href}
+  showRightSidebar={false}
+>
   <article class="post-article">
     <a href="/posts" class="back-link">← 返回文章列表</a>
     <div class="post-meta">

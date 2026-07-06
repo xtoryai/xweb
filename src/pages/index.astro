@@ -1,13 +1,29 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getContent } from '../core/content';
+import { getContent, getFileContent } from '../core/content';
 
+const general = getFileContent('src/content/settings/general.yml') || {};
 const posts = getContent('posts', 'src/content/posts')
   .filter(p => !p.data.draft)
   .slice(0, 8);
+
+const homeSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: general.site_title || '长河',
+  description: general.site_description || '一个普通人跨越时代的两段人生',
+  url: Astro.url.origin,
+  author: {
+    '@type': 'Person',
+    name: '长河',
+  },
+};
 ---
 
-<BaseLayout>
+<BaseLayout
+  description={general.site_description || '一个普通人跨越时代的两段人生。写代码、做产品、聊人生——不是教程，不是心得，就是一个普通人的随手记。'}
+  schema={homeSchema}
+>
   <div class="home">
 
     <!-- ═══════ HERO ═══════ -->

@@ -14,9 +14,22 @@ const page = pages.find(p => p.slug === pageSlug);
 if (!page) return Astro.redirect('/404');
 
 const htmlContent = page.body ? marked.parse(page.body) : '';
+const pageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: page.data.title,
+  description: page.data.description || '',
+  url: Astro.url.href,
+};
 ---
 
-<BaseLayout title={page.data.title} showRightSidebar={false}>
+<BaseLayout
+  title={page.data.title}
+  description={page.data.description}
+  canonicalUrl={Astro.url.href}
+  schema={pageSchema}
+  showRightSidebar={false}
+>
   <div class="page-wrap">
     <article class="page-article">
     <h1 class="page-title">{page.data.title}</h1>

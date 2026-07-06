@@ -14,9 +14,39 @@ const pMatch = Astro.request.url.match(/[?&]p=([^&]+)/);
 const selectedSlug = pMatch ? pMatch[1] : (allPosts[0]?.slug || '');
 const selectedPost = allPosts.find(p => p.slug === selectedSlug) || null;
 const selectedHtml = selectedPost?.body ? marked.parse(selectedPost.body) : '';
+
+// SEO: when viewing a post, use its metadata for title/description/schema
+const seoTitle = selectedPost ? selectedPost.data.title : t('文章', locale);
+const seoDesc = selectedPost?.data?.description || '';
+const seoCanonical = selectedPost ? `${Astro.url.origin}/posts?p=${selectedPost.slug}` : undefined;
+const seoSchema = selectedPost ? {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: selectedPost.data.title,
+  description: selectedPost.data.description || '',
+  datePublished: selectedPost.data.date || undefined,
+  dateModified: selectedPost.data.updated || selectedPost.data.date || undefined,
+  author: {
+    '@type': 'Person',
+    name: selectedPost.data.author || '长河',
+  },
+  image: selectedPost.data.image || undefined,
+  url: `${Astro.url.origin}/posts?p=${selectedPost.slug}`,
+} : undefined;
 ---
 
-<BaseLayout title={t('文章', locale)} hideFooter={true}>
+<BaseLayout
+  title={seoTitle}
+  description={seoDesc}
+  canonicalUrl={seoCanonical}
+  ogType={selectedPost ? 'article' : 'website'}
+  ogImage={selectedPost?.data?.image}
+  schema={seoSchema}
+  publishedTime={selectedPost?.data?.date}
+  modifiedTime={selectedPost?.data?.updated || selectedPost?.data?.date}
+  author={selectedPost?.data?.author || '长河'}
+  hideFooter={true}
+>
   <div class="posts-layout" id="posts-layout">
     <!-- MIDDLE: Post list -->
     <div class="posts-list" id="posts-list">
