@@ -6,6 +6,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>xtcms Admin</title>
   <link href="/admin/config.yml?locale=zh" type="application/yaml" rel="cms-config-url" id="cms-config-link">
+  <style>
+    /* Two-column editor: basic fields left, markdown body right */
+    /* .content is the scrollable pane that contains all field editors */
+    /* Each field has data-key-path attr (e.g. data-key-path="body") */
+    .content {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 0 24px !important;
+      align-content: start !important;
+    }
+    /* All fields default to left column */
+    .content > [data-key-path] {
+      grid-column: 1 !important;
+    }
+    /* Body field → right column, full height */
+    .content > [data-key-path="body"] {
+      grid-column: 2 !important;
+      grid-row: 1 / 100 !important;
+      height: 100% !important;
+      overflow: visible !important;
+    }
+    /* Fill available height for the rich text editor */
+    .content > [data-key-path="body"] .sui.text-editor {
+      min-height: calc(100vh - 200px) !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .content > [data-key-path="body"] [class*="lexical"],
+    .content > [data-key-path="body"] textarea {
+      flex: 1 !important;
+      overflow-y: auto !important;
+    }
+  </style>
 </head>
 <body>
   <script>
@@ -63,6 +96,29 @@
   <script src="/admin/sveltia-cms.js"></script>
   <script>
     setInterval(() => { if (document.title !== 'xtcms Admin') document.title = 'xtcms Admin'; }, 500);
+
+    /* Compact small fields into one row: date + pinned + draft */
+    function compactFields() {
+      var c = document.querySelector('.content');
+      if (!c) return;
+      var date = c.querySelector('[data-key-path="date"]');
+      var pinned = c.querySelector('[data-key-path="pinned"]');
+      var draft = c.querySelector('[data-key-path="draft"]');
+      if (!date || !pinned || !draft) return;
+      // Avoid double-wrapping
+      if (date.parentElement.classList.contains('inline-row')) return;
+      var row = document.createElement('div');
+      row.className = 'inline-row';
+      row.style.cssText = 'display:flex;gap:16px;align-items:center;grid-column:1';
+      date.after(row);
+      row.appendChild(date);
+      row.appendChild(pinned);
+      row.appendChild(draft);
+    }
+    // Run after CMS mounts, and on navigation
+    new MutationObserver(compactFields).observe(document.body, { childList: true, subtree: true });
+    setTimeout(compactFields, 500);
+    setTimeout(compactFields, 1500);
   </script>
 </body>
 </html>

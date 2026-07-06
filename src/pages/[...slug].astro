@@ -40,18 +40,18 @@ const htmlContent = page.body ? marked.parse(page.body) : '';
   .page-featured-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; margin-bottom: 32px; }
   .empty-body { text-align: center; padding: 60px 0; color: var(--color-text-muted); font-size: 16px; }
   .cms-content { font-size: var(--xt-body-size); line-height: 1.9; color: var(--color-text); }
-  .cms-content :global(h2) { font-size: 24px; font-weight: 600; color: var(--color-text); margin: 2em 0 0.6em; }
-  .cms-content :global(h3) { font-size: 20px; font-weight: 600; color: var(--color-text); margin: 1.6em 0 0.5em; }
-  .cms-content :global(p) { margin-bottom: 1.2em; }
-  .cms-content :global(img) { max-width: 100%; border-radius: 6px; margin: 1em 0; }
-  .cms-content :global(pre) { background: var(--color-hover-bg); padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 14px; margin: 1em 0; }
-  .cms-content :global(code) { background: var(--color-hover-bg); padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
-  .cms-content :global(blockquote) { border-left: 3px solid var(--color-text); padding-left: 16px; margin: 1em 0; color: var(--color-text-muted); }
-  .cms-content :global(ul), .cms-content :global(ol) { padding-left: 1.5em; margin-bottom: 1em; }
-  .cms-content :global(li) { margin-bottom: 0.4em; }
-  .cms-content :global(table) { width: 100%; border-collapse: collapse; margin: 1em 0; }
-  .cms-content :global(th), .cms-content :global(td) { border: 1px solid var(--color-border); padding: 8px 12px; text-align: left; font-size: 14px; }
-  .cms-content :global(th) { background: var(--color-hover-bg); font-weight: 600; }
-  .cms-content :global(hr) { border: none; border-top: 1px solid var(--color-border); margin: 2em 0; }
-  .cms-content :global(a) { color: var(--xt-accent); text-decoration: underline; }
+  .cms-content h2 { font-size: 24px; font-weight: 600; color: var(--color-text); margin: 2em 0 0.6em; }
+  .cms-content h3 { font-size: 20px; font-weight: 600; color: var(--color-text); margin: 1.6em 0 0.5em; }
+  .cms-content p { margin-bottom: 1.2em; }
+  .cms-content img { max-width: 100%; border-radius: 6px; margin: 1em 0; }
+  .cms-content pre { background: var(--color-hover-bg); padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 14px; margin: 1em 0; }
+  .cms-content code { background: var(--color-hover-bg); padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+  .cms-content blockquote { border-left: 3px solid var(--color-text); padding-left: 16px; margin: 1em 0; color: var(--color-text-muted); }
+  .cms-content ul, .cms-content ol { padding-left: 1.5em; margin-bottom: 1em; }
+  .cms-content li { margin-bottom: 0.4em; }
+  .cms-content table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+  .cms-content th, .cms-content td { border: 1px solid var(--color-border); padding: 8px 12px; text-align: left; font-size: 14px; }
+  .cms-content th { background: var(--color-hover-bg); font-weight: 600; }
+  .cms-content hr { border: none; border-top: 1px solid var(--color-border); margin: 2em 0; }
+  .cms-content a { color: var(--xt-accent); text-decoration: underline; }
 </style>
