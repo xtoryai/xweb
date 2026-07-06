@@ -26,9 +26,13 @@ COPY --from=builder /app/public/ ./public/
 # Pre-compress large static files for faster serving
 RUN find public -type f \( -name '*.js' -o -name '*.css' -o -name '*.svg' -o -name '*.html' \) -exec gzip -k9 {} \;
 
-# CMS runtime needs these to generate config.yml and read/write content
+# CMS runtime needs templates to generate config.yml
 COPY --from=builder /app/templates/ ./templates/
-COPY --from=builder /app/src/content/ ./src/content/
+
+# Content directory — intentionally NOT baked into the image.
+# Mount from host at runtime so CMS changes survive image rebuilds:
+#   docker run -v $(pwd)/src/content:/app/src/content -p 4321:4321 uuwish
+# The app will create default content if the directory is empty on first run.
 
 EXPOSE 4321
 
