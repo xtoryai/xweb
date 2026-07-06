@@ -1,6 +1,7 @@
 import { defineMiddleware } from 'astro:middleware';
 import fs from 'node:fs';
 import path from 'node:path';
+import zlib from 'node:zlib';
 import { generateCMSConfig } from './core/config-engine';
 
 const MIME: Record<string, string> = {
@@ -11,6 +12,9 @@ const MIME: Record<string, string> = {
   '.css': 'text/css', '.js': 'application/javascript',
   '.json': 'application/json', '.yml': 'application/yaml',
 };
+
+// File types worth compressing (text-based, not already compressed images/video)
+const COMPRESSIBLE = new Set(['.js', '.css', '.html', '.json', '.xml', '.svg', '.yml', '.txt', '.map']);
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const url = new URL(context.request.url);
@@ -35,11 +39,27 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   }
 
-  // ── Serve static files from public/ ──
+  // ── Serve static files from public/ (with gzip support) ──
   const ext = path.extname(url.pathname).toLowerCase();
   if (ext && MIME[ext]) {
     const publicPath = path.join(process.cwd(), 'public', url.pathname);
     if (fs.existsSync(publicPath)) {
+      const acceptEncoding = context.request.headers.get('accept-encoding') || '';
+      // Try pre-compressed .gz version first
+      if (acceptEncoding.includes('gzip') && COMPRESSIBLE.has(ext)) {
+        const gzPath = publicPath + '.gz';
+        if (fs.existsSync(gzPath)) {
+          const buf = fs.readFileSync(gzPath);
+          return new Response(buf, {
+            headers: {
+              'Content-Type': MIME[ext],
+              'Content-Encoding': 'gzip',
+              'Cache-Control': 'public, max-age=31536000',
+              'Vary': 'Accept-Encoding',
+            },
+          });
+        }
+      }
       const buf = fs.readFileSync(publicPath);
       return new Response(buf, {
         headers: { 'Content-Type': MIME[ext], 'Cache-Control': 'public, max-age=31536000' },

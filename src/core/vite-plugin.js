@@ -31,17 +31,19 @@ export function templateChainPlugin() {
    * or written by a CMS activation that had a broken registry at that moment.
    */
   function getActiveChain() {
-    const activePath = path.join(CWD, '.xtcms', 'active-template.json');
-    let activeName = 'blog';
-    if (fs.existsSync(activePath)) {
-      const marker = JSON.parse(fs.readFileSync(activePath, 'utf8'));
-      activeName = marker.name || 'blog';
-    }
-
-    // Resolve chain dynamically from registry extends chain
+    // Read registry first — it's the source of truth
     const regPath = path.join(CWD, 'templates', '.registry.json');
+    let activeName = 'blog';
     if (fs.existsSync(regPath)) {
       const reg = JSON.parse(fs.readFileSync(regPath, 'utf8'));
+      // .xtcms/active-template.json overrides registry (set by admin panel)
+      const activePath = path.join(CWD, '.xtcms', 'active-template.json');
+      if (fs.existsSync(activePath)) {
+        const marker = JSON.parse(fs.readFileSync(activePath, 'utf8'));
+        activeName = marker.name || reg.active || 'blog';
+      } else {
+        activeName = reg.active || 'blog';
+      }
       const installed = reg.installed || {};
       const chain = [];
       const visited = new Set();
@@ -519,10 +521,13 @@ export function templateChainPlugin() {
           console.log('[xtcms] Template config changed, regenerating...');
           generateContentConfigSync();
           syncPageFiles(currentChain);
+          server.restart();
+          return;
         }
         if (rel.includes('src/pages/') || rel.includes('src/layouts/') || rel.includes('src/components/')) {
-          console.log('[xtcms] Template file changed, syncing pages...');
+          console.log('[xtcms] Template file changed, syncing pages & restarting...');
           syncPageFiles(currentChain);
+          server.restart();
         }
       });
 

@@ -7,4 +7,6 @@ dist/
 .astro/
 .xtcms/
 templates/selective-solder-equipment
+templates/uuwish
+templates/.registry.json
 src/content/

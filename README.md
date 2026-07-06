@@ -102,7 +102,6 @@ xweb/
 ## Related
 
 - [xtoryai.com](https://xtoryai.com) — Project website
-- [xtocn.com](https://xtocn.com) — Commercial services (Chinese)
 - [Astro](https://astro.build) — The web framework
 - [Sveltia CMS](https://github.com/sveltia/sveltia-cms) — The headless CMS
 

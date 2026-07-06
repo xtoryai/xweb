@@ -35,7 +35,16 @@
       "extends": "blog",
       "installedAt": "2026-06-25T08:36:24.912Z",
       "path": "templates/selective-solder-equipment"
+    },
+    "uuwish": {
+      "name": "uuwish",
+      "label": "UUWish 新闻模板",
+      "version": "1.0.0",
+      "source": "ai-generated",
+      "extends": null,
+      "installedAt": "2026-07-06T00:00:00Z",
+      "path": "templates/uuwish"
     }
   },
-  "active": "selective-solder-equipment"
+  "active": "uuwish"
 }

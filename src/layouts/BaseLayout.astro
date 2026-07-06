@@ -1,27 +1,61 @@
 ---
-import { getFileContent } from '$core/content';
+import { getContent, getFileContent } from '../core/content';
+import { t, getFrontendLocale } from '../core/i18n-frontend';
 
 export interface Props {
   title?: string;
   description?: string;
+  hideFooter?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, hideFooter = false } = Astro.props;
+const locale = getFrontendLocale(Astro.request);
+
 const general = getFileContent('src/content/settings/general.yml') || {};
 const footer = getFileContent('src/content/settings/footer.yml') || {};
-const siteTitle = general.site_title || '选择性波峰焊设备';
-const siteDesc = general.site_description || '';
-const pageTitle = title ? `${title} - ${siteTitle}` : siteTitle;
+const social = getFileContent('src/content/settings/social.yml') || {};
+const siteTitle = title
+  ? `${title} - ${general.site_title || 'News'}`
+  : `${general.site_title || 'News'} - ${general.site_description || ''}`;
+
+const theme = {
+  primary: general.theme_primary || '#000000',
+  bg: general.theme_bg || '#ffffff',
+  accent: general.theme_accent || '#d4380d',
+  text: general.theme_text || '#1a1a1a',
+  muted: general.theme_muted || '#8E8E93',
+  headingFont: general.theme_heading_font || 'PingFang SC',
+  bodyFont: general.theme_body_font || 'PingFang SC',
+  bodySize: general.theme_body_size || '16',
+};
 
 const currentPath = Astro.url.pathname;
+const allPages = getContent('pages', 'src/content/pages');
+const navItems = [
+  { label: t('首页', locale), href: '/', icon: 'home' },
+  { label: t('文章', locale), href: '/posts', icon: 'news' },
+  { label: t('留言', locale), href: '/contact', icon: 'message' },
+  ...allPages.filter(p => !p.data.hidden).map(p => ({
+    label: p.data.title || p.slug, href: `/${p.slug}`, icon: 'page',
+  })),
+].map(item => ({
+  ...item,
+  active: item.href === '/' ? currentPath === '/' : currentPath.startsWith(item.href),
+}));
 
-const nav = [
-  { label: '良品率诊断', href: '/diagnosis' },
-  { label: '设备', href: '/equipment' },
-  { label: '案例', href: '/cases' },
-  { label: '工艺知识库', href: '/knowledge-base' },
-  { label: '服务', href: '/services' },
+const socialLinks = [
+  { key: 'instagram', href: social.instagram },
+  { key: 'facebook', href: social.facebook },
+  { key: 'twitter', href: social.twitter },
+  { key: 'youtube', href: social.youtube },
+  { key: 'tiktok', href: social.tiktok },
+].filter(s => s.href);
+
+const languages = [
+  { code: 'zh', label: '中文', href: '/' },
+  { code: 'en', label: 'English', href: '/en/' },
 ];
+const currentLang = languages.find(l => l.code === locale) || languages[0];
 ---
 
 <!DOCTYPE html>
@@ -29,239 +63,165 @@ const nav = [
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{pageTitle}</title>
-  <meta name="description" content={description || siteDesc} />
-  <link rel="icon" type="image/png" href="/favicon.png" />
+  <title>{siteTitle}</title>
+  <meta name="description" content={description || general.site_description || ''} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <Fragment set:html={`<style is:inline>
+    :root {
+      --xt-primary: ${theme.primary}; --xt-bg: ${theme.bg}; --xt-accent: ${theme.accent};
+      --xt-text: ${theme.text}; --xt-muted: ${theme.muted};
+      --xt-heading-font: ${theme.headingFont}; --xt-body-font: ${theme.bodyFont};
+      --xt-body-size: ${theme.bodySize}px;
+      --color-bg: #fff; --color-text: #1a1a1a; --color-text-muted: #8E8E93;
+      --color-border: #e5e5e5; --color-hover-bg: rgba(0,0,0,0.04);
+    }
+    [data-theme="dark"] {
+      --color-bg: #1c1c1e; --color-text: #f5f5f7; --color-text-muted: #98989d;
+      --color-border: #38383a; --color-hover-bg: rgba(255,255,255,0.06);
+    }
+  </style>`} />
+
   <style is:inline>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root {
-      --blue:#005a9c;--blue-light:#eff6ff;--green:#16a34a;--green-light:#f0fdf4;
-      --red:#dc2626;--red-light:#fef2f2;--amber:#d97706;--amber-light:#fffbeb;
-      --gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;
-      --gray-400:#94a3b8;--gray-500:#64748b;--gray-700:#334155;--gray-900:#0f172a;
-    }
-    body{font-family:"PingFang SC","Microsoft YaHei",-apple-system,sans-serif;color:var(--gray-900);background:#fff;line-height:1.6;-webkit-font-smoothing:antialiased}
-    a{text-decoration:none;color:inherit}
+    html{-webkit-font-smoothing:antialiased}
+    body{font-family:var(--xt-body-font),-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;font-size:var(--xt-body-size);color:var(--color-text);background:var(--color-bg);line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;height:auto}
 
-    /* Nav */
-    .nav-bar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--gray-200)}
-    .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;height:60px;gap:24px}
-    .nav-logo{font-size:17px;font-weight:700;color:var(--blue);white-space:nowrap}
-    .nav-links{display:flex;gap:2px;flex:1}
-    .nav-links a{padding:8px 14px;border-radius:6px;font-size:14px;font-weight:500;color:var(--gray-500);transition:all .15s}
-    .nav-links a:hover{color:var(--blue);background:var(--gray-50)}
-    .nav-links a.active{color:var(--blue);background:var(--blue-light)}
-    .nav-cta{background:var(--blue);color:#fff;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;white-space:nowrap}
-    .nav-cta:hover{opacity:.9}
-    .nav-toggle{display:none;background:none;border:none;padding:8px;cursor:pointer}
-    .nav-toggle span{display:block;width:22px;height:2px;background:var(--gray-900);margin:5px 0;border-radius:1px}
-    .nav-mobile{display:none;position:fixed;inset:0;z-index:60;background:#fff;flex-direction:column;padding:24px;transform:translateX(100%);transition:transform .3s}
-    .nav-mobile.open{transform:translateX(0);display:flex}
-    .nav-mobile-close{align-self:flex-end;background:none;border:none;font-size:28px;cursor:pointer;padding:8px}
-    .nav-mobile a{display:block;padding:14px 0;font-size:17px;color:var(--gray-900);border-bottom:1px solid var(--gray-200)}
+    .mob-header{display:none;position:sticky;top:0;z-index:100;background:var(--color-bg);height:56px;padding:0 16px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--color-border)}
+    .mob-header button,.mob-header .search-btn{background:none;border:none;cursor:pointer;padding:8px;color:var(--color-text);display:flex;align-items:center}
+    .mob-header .logo-mob{font-size:17px;font-weight:700}
 
-    /* Containers */
-    .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
-    .wrap-sm{max-width:900px;margin:0 auto;padding:0 24px}
-    .section{padding:80px 0}
-    .section-gray{background:var(--gray-50)}
-    .section-blue{background:var(--blue-light)}
-    .section-dark{background:var(--gray-900);color:#fff}
+    .mob-sidebar{position:fixed;top:0;left:0;z-index:90;width:260px;height:100vh;background:var(--color-bg);padding:32px 20px;overflow-y:auto;border-right:1px solid var(--color-border);transform:translateX(-100%);transition:transform .25s;display:flex;flex-direction:column}
+    .mob-sidebar.open{transform:translateX(0)}
+    .mob-sidebar .sb-logo{font-size:20px;font-weight:700;margin-bottom:36px;display:block}
+    .mob-sidebar nav{flex:1;display:flex;flex-direction:column;gap:2px}
+    .mob-sidebar nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;font-size:16px;color:var(--color-text-muted);transition:background .15s,color .15s}
+    .mob-sidebar nav a:hover,.mob-sidebar nav a.active{background:var(--color-hover-bg);color:var(--color-text);font-weight:600}
+    .mob-sidebar nav a svg{width:22px;height:22px;flex-shrink:0}
+    .mob-sidebar .sb-bot{margin-top:auto;padding-top:20px;border-top:1px solid var(--color-border)}
+    .mob-sidebar .sb-theme{display:flex;gap:4px;margin-bottom:12px}
+    .mob-sidebar .sb-theme button{flex:1;padding:8px;border:1px solid var(--color-border);border-radius:6px;background:none;cursor:pointer;color:var(--color-text-muted)}
+    .mob-sidebar .sb-theme button.active{border-color:var(--color-text);color:var(--color-text)}
+    .mob-sidebar .sb-theme button svg{width:18px;height:18px}
+    .mob-sidebar .sb-social{display:flex;flex-wrap:wrap;gap:6px}
+    .mob-sidebar .sb-social a{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;color:var(--color-text-muted)}
+    .mob-sidebar .sb-social a:hover{background:var(--color-hover-bg);color:var(--color-text)}
+    .mob-sidebar .sb-social a svg{width:18px;height:18px}
 
-    /* Hero */
-    .hero{padding:80px 0 60px}
-    .hero h1{font-size:clamp(26px,5vw,44px);font-weight:800;line-height:1.2;margin-bottom:16px}
-    .hero h1 em{font-style:normal;color:var(--blue)}
-    .hero-lead{font-size:18px;color:var(--gray-500);max-width:600px;line-height:1.8;margin-bottom:28px}
-    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .mob-overlay{position:fixed;inset:0;z-index:85;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .25s}
+    .mob-overlay.show{opacity:1;pointer-events:auto}
 
-    /* Buttons */
-    .btn{display:inline-flex;align-items:center;gap:6px;padding:12px 28px;border-radius:8px;font-weight:600;font-size:15px;cursor:pointer;border:none;transition:all .15s}
-    .btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#004580}
-    .btn-white{background:#fff;color:var(--blue);border:1px solid var(--gray-200)}.btn-white:hover{background:var(--blue-light)}
-    .btn-large{padding:16px 36px;font-size:17px}
+    .desk-sidebar{width:220px;flex-shrink:0;border-right:1px solid var(--color-border);padding:32px 24px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+    .desk-sidebar .ds-logo{font-size:20px;font-weight:700;margin-bottom:36px;display:block;letter-spacing:-.3px}
+    .desk-sidebar nav{flex:1;display:flex;flex-direction:column;gap:2px}
+    .desk-sidebar nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;font-size:16px;color:var(--color-text-muted);transition:background .15s,color .15s}
+    .desk-sidebar nav a:hover{background:var(--color-hover-bg);color:var(--color-text)}
+    .desk-sidebar nav a.active{background:var(--color-hover-bg);color:var(--color-text);font-weight:600}
+    .desk-sidebar nav a svg{width:22px;height:22px;flex-shrink:0}
+    .ds-bot{margin-top:auto;padding-top:20px;border-top:1px solid var(--color-border)}
+    .ds-theme{display:flex;gap:4px;margin-bottom:12px}
+    .ds-theme button{flex:1;padding:8px;border:1px solid var(--color-border);border-radius:6px;background:none;cursor:pointer;color:var(--color-text-muted)}
+    .ds-theme button.active{border-color:var(--color-text);color:var(--color-text)}
+    .ds-theme button svg{width:18px;height:18px}
+    .ds-social{display:flex;flex-wrap:wrap;gap:6px}
+    .ds-social a{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;color:var(--color-text-muted)}
+    .ds-social a:hover{background:var(--color-hover-bg);color:var(--color-text)}
+    .ds-social a svg{width:18px;height:18px}
 
-    /* Stat cards */
-    .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
-    .stat-card{background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:24px}
-    .stat-label{font-size:13px;color:var(--gray-500);margin-bottom:4px}
-    .stat-value{font-size:28px;font-weight:800;color:var(--blue)}
-    .stat-desc{font-size:12px;color:var(--gray-400);margin-top:4px}
+    .ftr{padding:32px 0;border-top:1px solid var(--color-border);text-align:center;font-size:13px;color:var(--color-text-muted)}
+    .ftr a{color:var(--color-text-muted)}
+    .ftr-inner{max-width:680px;margin:0 auto;padding:0 24px;line-height:2}
 
-    /* Card grid */
-    .card-grid{display:grid;gap:20px}
-    .cols-2{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}
-    .cols-3{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
-    .cols-4{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-    .card{background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:24px;transition:all .15s;display:block}
-    .card:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(0,90,156,.08)}
-    .card-title{font-size:17px;font-weight:700;color:var(--gray-900);margin-bottom:8px}
-    .card-meta{font-size:13px;color:var(--gray-500);margin-bottom:8px}
-    .card-desc{font-size:14px;color:var(--gray-500);line-height:1.6}
-    .card-tag{font-size:12px;color:var(--blue);font-weight:500}
-
-    /* Highlight box */
-    .highlight{padding:12px 16px;border-radius:8px;font-size:13px;font-weight:500;margin-top:12px}
-    .highlight-green{background:var(--green-light);color:var(--green)}
-    .highlight-red{background:var(--red-light);color:var(--red)}
-
-    /* Section headers */
-    .sec-label{font-size:12px;font-weight:700;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-    .sec-title{font-size:clamp(22px,4vw,32px);font-weight:800;color:var(--gray-900);margin-bottom:12px}
-    .sec-desc{font-size:16px;color:var(--gray-500);max-width:600px;line-height:1.7}
-
-    /* Pain cards */
-    .pain-card{background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:28px}
-    .pain-card .pain-icon{font-size:24px;margin-bottom:12px}
-    .pain-card h3{font-size:16px;font-weight:700;color:var(--gray-900);margin-bottom:8px}
-    .pain-card p{font-size:14px;color:var(--gray-500);line-height:1.7}
-    .pain-card .pain-loss{font-size:13px;color:var(--red);font-weight:600;margin-top:12px;padding:8px 12px;background:var(--red-light);border-radius:6px;display:inline-block}
-
-    /* Diagnosis form */
-    .diag-form{background:#fff;border:2px solid var(--blue);border-radius:12px;padding:32px;max-width:700px;margin:0 auto}
-    .diag-q{margin-bottom:24px}
-    .diag-q label{display:block;font-size:15px;font-weight:600;color:var(--gray-900);margin-bottom:10px}
-    .diag-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
-    .diag-opt{padding:12px 16px;border:2px solid var(--gray-200);border-radius:8px;cursor:pointer;text-align:center;font-size:14px;transition:all .15s;background:#fff}
-    .diag-opt:hover{border-color:var(--blue);background:var(--blue-light)}
-    .diag-opt.selected{border-color:var(--blue);background:var(--blue-light);font-weight:600}
-    .diag-result{background:var(--green-light);border-radius:10px;padding:28px;text-align:center}
-    .diag-result h3{font-size:22px;font-weight:800;color:var(--green);margin-bottom:12px}
-    .diag-result .big-number{font-size:42px;font-weight:900;color:var(--green);display:block;margin:8px 0}
-
-    /* Page title */
-    .page-h1{font-size:30px;font-weight:800;color:var(--gray-900);margin-bottom:8px}
-    .page-lead{font-size:16px;color:var(--gray-500);margin-bottom:36px}
-
-    /* Breadcrumb */
-    .crumbs{font-size:13px;color:var(--gray-400);margin-bottom:20px}
-    .crumbs a{color:var(--blue)}
-
-    /* Article */
-    .article{line-height:1.9;color:var(--gray-700);font-size:15px}
-    .article h2{font-size:22px;font-weight:700;color:var(--gray-900);margin:32px 0 12px}
-    .article h3{font-size:17px;font-weight:700;margin:24px 0 8px}
-    .article p{margin-bottom:12px}
-    .article table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
-    .article td,.article th{border:1px solid var(--gray-200);padding:10px 14px;font-size:14px;text-align:left;vertical-align:top}
-    .article th{background:var(--gray-50);font-weight:700;color:var(--gray-900)}
-    .article tr:nth-child(even){background:var(--gray-50)}
-    .article ul,.article ol{padding-left:24px;margin:12px 0}
-    .article li{margin-bottom:6px;line-height:1.7}
-    .article code{background:var(--gray-100);padding:2px 6px;border-radius:3px;font-size:13px;font-family:monospace}
-    .article pre{background:var(--gray-900);color:#e2e8f0;padding:16px 20px;border-radius:8px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.6}
-    .article strong{color:var(--gray-900)}
-    .article hr{border:none;border-top:1px solid var(--gray-200);margin:24px 0}
-
-    /* Pain/Solution/Result blocks */
-    .block{padding:24px;border-radius:12px;margin-bottom:20px}
-    .block-pain{background:var(--red-light);border:1px solid #fecaca}
-    .block-pain h3{color:var(--red)}
-    .block-solution{background:var(--blue-light);border:1px solid #bfdbfe}
-    .block-solution h3{color:var(--blue)}
-    .block-result{background:var(--green-light);border:2px solid #86efac;text-align:center}
-    .block-result h3{color:var(--green)}
-    .block-result .big{font-size:22px;font-weight:800;color:var(--green)}
-
-    /* Tags */
-    .tags{display:flex;flex-wrap:wrap;gap:6px}
-    .tag{background:var(--blue-light);color:var(--blue);padding:3px 10px;border-radius:20px;font-size:12px}
-
-    /* Specs box */
-    .specs{background:var(--gray-50);border-radius:10px;padding:20px;font-family:monospace;font-size:13px;color:var(--gray-700);line-height:1.9;white-space:pre-wrap}
-
-    /* Video embed */
-    .video-box{aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;margin-bottom:24px}
-    .video-box iframe{width:100%;height:100%}
-
-    /* Form */
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
-    .form-card{background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:32px}
-    .form-group{margin-bottom:16px}
-    .form-group label{display:block;font-size:14px;font-weight:500;color:var(--gray-700);margin-bottom:4px}
-    .form-group input,.form-group textarea{width:100%;padding:10px 14px;border:1px solid var(--gray-300);border-radius:8px;font-size:14px;outline:none;font-family:inherit}
-    .form-group input:focus,.form-group textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,90,156,.08)}
-    .btn-submit{width:100%;background:var(--blue);color:#fff;padding:12px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
-    .btn-submit:hover{opacity:.9}
-
-    /* Contact info cards */
-    .info-card{display:flex;align-items:center;gap:16px;margin-bottom:16px;padding:20px;background:var(--gray-50);border-radius:10px}
-    .info-icon{font-size:26px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--blue-light);border-radius:10px;flex-shrink:0}
-    .info-card strong{display:block;font-size:15px;margin-bottom:2px}
-    .info-card span{font-size:14px;color:var(--gray-500)}
-
-    /* Detail page CTA */
-    .cta-block{text-align:center;padding:40px;background:var(--blue-light);border-radius:12px;margin-top:48px}
-    .cta-block h3{font-size:18px;font-weight:700;color:var(--blue);margin-bottom:12px}
-
-    /* ROI page */
-    .roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
-    .roi-form{padding:32px;background:#fff;border:1px solid var(--gray-200);border-radius:12px}
-    .roi-result{background:var(--gray-900);color:#fff;border-radius:12px;padding:36px 32px}
-    .roi-result h3{color:var(--gray-400);font-size:13px;font-weight:500;margin-bottom:4px}
-    .roi-result .val{font-size:36px;font-weight:800;margin-bottom:20px}
-    .roi-result .val span{font-size:16px;font-weight:400;color:var(--gray-400)}
-    .roi-result .val.green{color:#4ade80}
-    .roi-result .val.blue{color:#60a5fa}
-
-    /* Selector */
-    .step{display:none}
-    .step.active{display:block}
-    .progress{display:flex;gap:4px;margin-bottom:24px}
-    .progress-bar{flex:1;height:3px;border-radius:2px;background:var(--gray-200);transition:background .3s}
-    .progress-bar.done{background:var(--blue)}
-    .opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-    .opt-btn{padding:20px;border:2px solid var(--gray-200);border-radius:10px;cursor:pointer;text-align:left;background:#fff;transition:all .15s;font-size:15px}
-    .opt-btn:hover{border-color:var(--blue);background:var(--blue-light)}
-    .opt-btn .opt-icon{font-size:28px;margin-bottom:8px}
-    .opt-btn .opt-label{font-weight:600;display:block;margin-bottom:2px}
-    .opt-btn .opt-hint{font-size:12px;color:var(--gray-400)}
-
-    /* Footer */
-    .site-footer{background:var(--gray-900);color:var(--gray-400);padding:60px 0 30px;font-size:14px;line-height:2}
-    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
-    .footer-grid h4{color:#e2e8f0;font-size:14px;margin-bottom:12px}
-    .footer-grid a{color:var(--gray-400)}.footer-grid a:hover{color:#fff}
-    .footer-bottom{text-align:center;padding-top:24px;border-top:1px solid #1e293b;color:var(--gray-500);font-size:13px}
-
-    @media(max-width:768px){
-      .nav-links,.nav-cta{display:none}.nav-toggle{display:block}
-      .footer-grid{grid-template-columns:1fr;gap:24px}
-      .form-grid,.roi-grid{grid-template-columns:1fr}
-      .hero{padding:48px 0 40px}
-      .cols-2,.cols-3,.cols-4{grid-template-columns:1fr}
-    }
+    @media(max-width:860px){.desk-sidebar{display:none}.mob-header{display:flex}.mob-sidebar{display:flex}}
+    @media(min-width:861px){.mob-header{display:none}.mob-sidebar{display:none}.mob-overlay{display:none}}
   </style>
 </head>
+
 <body>
-  <nav class="nav-bar"><div class="nav-inner">
-    <a href="/" class="nav-logo">{siteTitle}</a>
-    <div class="nav-links">
-      {nav.map(item=><a href={item.href} class={(currentPath===item.href||(item.href!=='/'&&currentPath.startsWith(item.href)))?'active':''}>{item.label}</a>)}
+  <div class="mob-overlay" id="mob-overlay"></div>
+
+  <!-- MOBILE SIDEBAR -->
+  <aside class="mob-sidebar" id="mob-sidebar">
+    <a href="/" class="sb-logo">{general.site_title || 'News'}</a>
+    <nav>
+      {navItems.map(item => (
+        <a href={item.href} class={item.active ? 'active' : ''}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            {item.icon === 'home' ? <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5zM9 21V12h6v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> :
+             item.icon === 'news' ? <path d="M8 14h8M8 17.5h4M8 10.5h4M20 8v11a3 3 0 01-3 3H7a3 3 0 01-3-3V5a3 3 0 013-3h8.3M20 8l-5.7-6M20 8h-3.7a2 2 0 01-1.7-2V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> :
+             item.icon === 'message' ? <path d="M12.2 21c4.8 0 8.8-4 8.8-9s-4-9-8.8-9S3.5 7 3.5 12c0 1.9.5 3.6 1.5 5 0 0-.5 2-2 3.5 3.9.5 5.4-.4 5.4-.4A8.7 8.7 0 0012.2 21z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/> :
+             <path d="M4 6h16M4 12h10M4 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>}
+          </svg>
+          <span>{item.label}</span>
+        </a>
+      ))}
+    </nav>
+    <div class="sb-bot">
+      <div class="sb-theme">
+        <button id="mob-btn-light" class="active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+        <button id="mob-btn-dark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4.9 16.8c2.7 4.2 8.2 5.5 12.5 2.8a9 9 0 003.1-3.3c-3.5 1.3-7.6 0-9.7-3.2A8.4 8.4 0 0112.1 3a9.1 9.1 0 00-4.4 1.4A8.8 8.8 0 004.9 16.8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      {socialLinks.length > 0 && <div class="sb-social">{socialLinks.map(s => <a href={s.href} target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/></svg></a>)}</div>}
     </div>
-    <a href="/contact" class="nav-cta">预约诊断</a>
-    <button class="nav-toggle" id="nav-toggle" aria-label="菜单"><span></span><span></span><span></span></button>
-  </div></nav>
-  <div class="nav-mobile" id="nav-mobile">
-    <button class="nav-mobile-close" id="nav-close">&times;</button>
-    {nav.map(item=><a href={item.href}>{item.label}</a>)}
-    <a href="/contact" style="margin-top:12px;color:var(--blue);font-weight:600">预约诊断</a>
-  </div>
+  </aside>
 
-  <main><slot /></main>
+  <!-- MOBILE HEADER -->
+  <header class="mob-header">
+    <button id="hamburger-btn" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M15 17H5M19 7H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+    <a href="/" class="logo-mob">{general.site_title || 'News'}</a>
+    <a href="/?s=" class="search-btn" aria-label="Search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M17 17l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+  </header>
 
-  <footer class="site-footer"><div class="wrap"><div class="footer-grid">
-    <div><h4>{siteTitle}</h4><p>{siteDesc}</p></div>
-    <div><h4>诊断工具</h4><a href="/diagnosis">良品率自测</a><br/><a href="/roi-calculator">ROI 计算器</a><br/><a href="/selector">选型向导</a></div>
-    <div><h4>资源</h4><a href="/cases">客户案例</a><br/><a href="/knowledge-base">工艺知识库</a><br/><a href="/services">服务支持</a></div>
-    <div><h4>联系</h4>{general.email && <p>{general.email}</p>}{general.phone && <p>{general.phone}</p>}</div>
+  <!-- DESKTOP LAYOUT -->
+  <div style="display:flex;min-height:100vh">
+    <aside class="desk-sidebar">
+      <a href="/" class="ds-logo">{general.site_title || 'News'}</a>
+      <nav>
+        {navItems.map(item => (
+          <a href={item.href} class={item.active ? 'active' : ''}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              {item.icon === 'home' ? <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5zM9 21V12h6v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> :
+               item.icon === 'news' ? <path d="M8 14h8M8 17.5h4M8 10.5h4M20 8v11a3 3 0 01-3 3H7a3 3 0 01-3-3V5a3 3 0 013-3h8.3M20 8l-5.7-6M20 8h-3.7a2 2 0 01-1.7-2V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> :
+               item.icon === 'message' ? <path d="M12.2 21c4.8 0 8.8-4 8.8-9s-4-9-8.8-9S3.5 7 3.5 12c0 1.9.5 3.6 1.5 5 0 0-.5 2-2 3.5 3.9.5 5.4-.4 5.4-.4A8.7 8.7 0 0012.2 21z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/> :
+               <path d="M4 6h16M4 12h10M4 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>}
+            </svg>
+            <span>{item.label}</span>
+          </a>
+        ))}
+      </nav>
+      <div class="ds-bot">
+        <div class="ds-theme">
+          <button id="btn-light" class="active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <button id="btn-dark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4.9 16.8c2.7 4.2 8.2 5.5 12.5 2.8a9 9 0 003.1-3.3c-3.5 1.3-7.6 0-9.7-3.2A8.4 8.4 0 0112.1 3a9.1 9.1 0 00-4.4 1.4A8.8 8.8 0 004.9 16.8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+        {socialLinks.length > 0 && <div class="ds-social">{socialLinks.map(s => <a href={s.href} target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/></svg></a>)}</div>}
+      </div>
+    </aside>
+
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+      <div style="flex:1;min-height:0;overflow:hidden;position:relative"><slot /></div>
+      {!hideFooter && (
+        <footer class="ftr"><div class="ftr-inner">
+          <p>&copy; {new Date().getFullYear()} {footer.copyright || general.site_title || 'News'}</p>
+          {footer.icp && <p><a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow">{footer.icp}</a></p>}
+        </div></footer>
+      )}
+    </div>
   </div>
-  <div class="footer-bottom">&copy; {new Date().getFullYear()} {siteTitle}{footer.icp && <> · <a href="https://beian.miit.gov.cn/">{footer.icp}</a></>}</div>
-  </div></footer>
 
   <script is:inline>
-    document.getElementById('nav-toggle')?.addEventListener('click',()=>document.getElementById('nav-mobile')?.classList.add('open'));
-    document.getElementById('nav-close')?.addEventListener('click',()=>document.getElementById('nav-mobile')?.classList.remove('open'));
+    (function(){
+      var h=document.documentElement;
+      var mb=document.getElementById('mob-sidebar'),ov=document.getElementById('mob-overlay'),hb=document.getElementById('hamburger-btn');
+      if(hb&&mb&&ov){hb.onclick=function(){mb.classList.add('open');ov.classList.add('show');mb.style.display='flex'};ov.onclick=function(){mb.classList.remove('open');ov.classList.remove('show')};mb.querySelectorAll('nav a').forEach(function(a){a.onclick=function(){mb.classList.remove('open');ov.classList.remove('show')}})}
+      function sync(){var d=h.getAttribute('data-theme')==='dark';document.querySelectorAll('#btn-light,#mob-btn-light').forEach(function(b){b.classList.toggle('active',!d)});document.querySelectorAll('#btn-dark,#mob-btn-dark').forEach(function(b){b.classList.toggle('active',d)})}
+      function set(t){if(t==='dark'){h.setAttribute('data-theme','dark');localStorage.setItem('uuwish-theme','dark')}else{h.removeAttribute('data-theme');localStorage.setItem('uuwish-theme','light')}sync()}
+      if(localStorage.getItem('uuwish-theme')==='dark')h.setAttribute('data-theme','dark');sync();
+      document.querySelectorAll('#btn-light,#mob-btn-light').forEach(function(b){b.onclick=function(){set('light')}});
+      document.querySelectorAll('#btn-dark,#mob-btn-dark').forEach(function(b){b.onclick=function(){set('dark')}});
+    })();
   </script>
 </body>
 </html>
