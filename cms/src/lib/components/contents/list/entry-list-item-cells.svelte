@@ -66,10 +66,16 @@
 {/if}
 {#if collection._thumbnailFieldNames.length}
   <GridCell class="image">
-    {#await getEntryThumbnail(collection, entry) then src}
+    {#await getEntryThumbnail(collection, entry)}
+      <div class="default-thumb"><Icon name="draft" /></div>
+    {:then src}
       {#if src}
         <Image {src} variant={viewType === 'list' ? 'icon' : 'tile'} cover />
+      {:else}
+        <div class="default-thumb"><Icon name="draft" /></div>
       {/if}
+    {:catch}
+      <div class="default-thumb"><Icon name="draft" /></div>
     {/await}
   </GridCell>
 {/if}
@@ -100,6 +106,16 @@
         vertical-align: -4px;
       }
     }
+  }
+
+  .image :global(.default-thumb) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--sui-secondary-foreground-color, #999);
+    font-size: 22px;
   }
 
   .pinned {

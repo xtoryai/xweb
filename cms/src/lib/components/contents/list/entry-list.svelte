@@ -59,9 +59,10 @@
     return false;
   });
 
-  // When sort changes, reset the collection and reload page 1
+  // When sort changes, reset the collection and reload page 1.
+  // Only fire when pagination data exists AND we're not currently loading.
   $effect(() => {
-    if (sortChanged && collectionName && pagination?.total) {
+    if (sortChanged && collectionName && pagination?.total && !pagination?.loading) {
       goToPage(1);
     }
   });
@@ -69,28 +70,35 @@
   /** Track which collection we last loaded, to detect switches */
   let lastLoadedCollection = /** @type {string | undefined} */ (undefined);
 
-  // On mount / collection switch: replace initial full load with just the first page
+  // On mount / collection switch: replace initial full load with just the first page.
+  // This fires once per collection per component lifecycle. It calls fetchCollectionPage
+  // directly (NOT resetCollection first) because fetchCollectionPage for page 1 already
+  // handles removing old entries for this collection internally. Calling resetCollection
+  // first would create a window where entries are cleared but not yet reloaded — if
+  // anything goes wrong during that window (navigation, error, race condition), the
+  // collection appears empty.
   $effect(() => {
     const backendSvc = $backend;
     if (!backendSvc?.fetchCollectionPage || !collectionName) return;
     if (collectionName === lastLoadedCollection) return;
     lastLoadedCollection = collectionName;
 
-    // Skip if we already have paginated data for this collection
+    // If we already have paginated data or are currently loading, skip
     if ($collectionPagination[collectionName]?.total) return;
+    if ($collectionPagination[collectionName]?.loading) return;
 
-    // Reset & load page 1
-    if (backendSvc.resetCollection) {
-      backendSvc.resetCollection(collectionName).then(() => {
-        const { key, order } = $currentView.sort ?? {};
-        backendSvc.fetchCollectionPage?.({
-          collection: collectionName,
-          page: 1,
-          sort: key,
-          order,
-        });
-      });
-    }
+    // Load page 1 directly — fetchCollectionPage internally filters old entries
+    const { key, order } = $currentView.sort ?? {};
+    backendSvc.fetchCollectionPage({
+      collection: collectionName,
+      page: 1,
+      sort: key,
+      order,
+    }).catch(() => {
+      // If the reload fails, clear our tracking so the next navigation
+      // will retry instead of showing stale/missing data.
+      lastLoadedCollection = undefined;
+    });
   });
 
   /**

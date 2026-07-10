@@ -39,9 +39,15 @@
   let prevItemsLength = 0;
   $effect(() => {
     if (items.length < prevItemsLength) {
+      // Collection shrunk (filter applied, switched to smaller collection, etc.)
       revealedCount = Math.min(itemChunkSize, items.length);
     } else if (revealedCount === 0 && items.length > 0) {
+      // Initial render — show first chunk
       revealedCount = Math.min(itemChunkSize, items.length);
+    } else if (items.length > prevItemsLength) {
+      // Items grew but IntersectionObserver may not fire because the sentinel
+      // is already visible in the viewport. Reveal the new items immediately.
+      revealedCount = Math.min(revealedCount + itemChunkSize, items.length);
     }
     prevItemsLength = items.length;
   });
